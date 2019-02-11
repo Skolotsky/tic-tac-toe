@@ -25,7 +25,7 @@ const getGameInfo = (store: IStore<GameGUID, Game>, id: GameGUID): GameInfo | nu
   return null;
 };
 
-export class GameInfoService extends StoreService<GameGUID, GameInfo> {
+export class GameInfosService extends StoreService<GameGUID, GameInfo> {
   constructor(
     store: GamesStore,
     webSocketService: WebSocketService

@@ -14,19 +14,13 @@ interface GameViewProps {
 
 @observer
 class GameView extends Component<GameViewProps> {
-
-  isSelfCell = (cell: Field.Cell) => {
-    const { player } = this.props;
-    return cell === player.id;
-  };
-
   render() {
     const { game, onSelectCell } = this.props;
     return (
       <div className={styles.GameView}>
         <PlayerListView players={game.players}/>
         Last player: { game.lastAction ? <PlayerView player={game.lastAction.player}/> : 'nobody' }
-        <FieldView field={game.field} isSelfCell={this.isSelfCell} onSelectCell={onSelectCell}/>
+        <FieldView field={game.field} onSelectCell={onSelectCell}/>
       </div>
     );
   }

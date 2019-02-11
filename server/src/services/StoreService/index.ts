@@ -31,22 +31,26 @@ export class StoreService<ID extends string, T> {
       disposers = new Map<ID, IReactionDisposer>();
       this.disposers.set(connectionId, disposers);
     }
-    const game = message.data as ID;
-    disposers.set(
-      game,
-      autorun(() => this.send(game, [connectionId]))
-    );
+    const ids = JSON.parse(message.data!) as ID[];
+    ids.forEach(id => {
+      disposers!.set(
+        id,
+        autorun(() => this.send(id, [connectionId]))
+      );
+    });
   };
 
   private onUnsubscribe = (message: WebSocketMessage, connectionId: ConnectionId) => {
     let disposers = this.disposers.get(connectionId);
     if (disposers) {
-      const entity = message.data as ID;
-      const disposer = disposers.get(entity);
-      if (disposer) {
-        disposer();
-        disposers.delete(entity);
-      }
+      const ids = JSON.parse(message.data!) as ID[];
+      ids.forEach(id => {
+        const disposer = disposers!.get(id);
+        if (disposer) {
+          disposer();
+          disposers!.delete(id);
+        }
+      });
     }
   };
 

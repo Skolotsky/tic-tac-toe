@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import styles from './styles.module.css';
 import GameInfoView from '../GameInfoView';
-import { Game } from '../../common/models';
+import { GameInfo } from '../../common/models';
 
-interface GameListViewProps<TGame extends Game> {
-  games: TGame[]
-  onSelectGame: (game: TGame) => void
+interface GameListViewProps {
+  games: GameInfo[]
+  onSelectGame: (game: GameInfo) => void
 }
 
-class GameListView<TGame extends Game> extends Component<GameListViewProps<TGame>> {
+class GameListView extends Component<GameListViewProps> {
 
   render() {
     const { games, onSelectGame } = this.props;

@@ -3,12 +3,11 @@ import './App.css';
 import { Game, GameGUID } from './common/models';
 import { observer } from 'mobx-react';
 import { action, observable } from 'mobx';
-import { player } from './mocks';
 import GameComponent from './components/GameComponent';
 import { webSocketService } from './services/WebSocketService';
 import GameListComponent from './components/GameListComponent';
-
-
+import { playerService } from './services/PlayerService';
+import { gamesService } from './services/GamesService';
 
 @observer
 class App extends Component {
@@ -16,21 +15,29 @@ class App extends Component {
   selectedGame: GameGUID | null = null;
 
   @action
-  onSelectGame = (game: GameGUID) => {
-    this.selectedGame = game;
-    webSocketService.send({
-      type: 'Game',
-      data: game
-    })
+  onSelectGame = (id: GameGUID) => {
+    this.selectedGame = id;
+    gamesService.joinGame(id);
   };
 
   render() {
     const { selectedGame, onSelectGame } = this;
+    const self = playerService.self();
+    if (!self) {
+      return 'Getting player...';
+    }
     if (webSocketService.isConnected) {
       return (
         <div className="App">
           <GameListComponent onSelectGame={ onSelectGame }/>
-          { selectedGame ? <GameComponent player={ player.id } game={ selectedGame }/> : null }
+          {
+            selectedGame ?
+              <GameComponent
+                player={ self }
+                game={ selectedGame }
+              /> :
+              null
+          }
         </div>
       );
     }

@@ -1,5 +1,4 @@
-import { Game, GameGUID, GameInfo, PlayerGUID } from '../common/models';
-import { game } from '../mocks';
+import { GameGUID, GameInfo } from '../common/models';
 import { Store } from './Store';
 
 export class GameInfosStore extends Store<GameGUID, GameInfo> {

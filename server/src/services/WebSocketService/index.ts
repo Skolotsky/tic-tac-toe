@@ -33,18 +33,26 @@ export class WebSocketService {
       connectionIds.forEach(connectionId => {
         const ws = this.connections.get(connectionId);
         if (ws) {
-          ws.send(serializeWebSocketMessage(message));
+          this.sendToWs(ws, message);
         }
       });
     } else {
       this.connections.forEach(ws => {
-        ws.send(serializeWebSocketMessage(message));
+        this.sendToWs(ws, message);
       });
     }
   }
 
   on(type: WebSocketMessageType | typeof WebSocketService.REMOVE, handler: Handler) {
     return this.eventEmitter.on(type, handler)
+  }
+
+  private sendToWs(ws: WebSocket, message: WebSocketMessage) {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(serializeWebSocketMessage(message));
+    } else {
+      this.onClose(ws);
+    }
   }
 
   private getConnectionId(source: WebSocket): ConnectionId | null {

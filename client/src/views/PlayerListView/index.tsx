@@ -14,7 +14,7 @@ class PlayerListView extends Component<PlayerListViewProps> {
       <div className={styles.PlayerListView}>
         {
           players.map(player =>
-            <PlayerView key={player.id} player={player}/>
+            <div key={player.id}><PlayerView player={player}/></div>
           )
         }
       </div>

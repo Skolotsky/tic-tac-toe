@@ -40,4 +40,4 @@ export class GameListService {
   };
 }
 
-  export const gameListService = new GameListService(gameListStore, webSocketService);
+export const gameListService = new GameListService(gameListStore, webSocketService);

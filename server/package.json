@@ -7,6 +7,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "mobx": "^5.9.0",
+    "uuid": "^3.3.2",
     "ws": "^6.1.3"
   },
   "devDependencies": {

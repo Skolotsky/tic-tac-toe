@@ -6,7 +6,9 @@ export class StoreService<ID extends string, T extends { id: ID }> {
     private store: Store<ID, T>,
     private webSocketService: WebSocketService,
     private deserialize: (data: string) => T,
-    private receiveMessageType: WebSocketMessageType
+    private subscribeMessageType: WebSocketMessageType,
+    private unsubscribeMessageType: WebSocketMessageType,
+    receiveMessageType: WebSocketMessageType
   ) {
     webSocketService.on(
       receiveMessageType,
@@ -14,8 +16,30 @@ export class StoreService<ID extends string, T extends { id: ID }> {
     );
   }
 
+  subscribe(ids: ID[]) {
+    if (!ids.length) {
+      return;
+    }
+    this.webSocketService.send({
+      type: this.subscribeMessageType,
+      data: JSON.stringify(ids)
+    })
+  }
+
+  unsubscribe(ids: ID[]) {
+    if (!ids.length) {
+      return;
+    }
+    this.webSocketService.send({
+      type: this.unsubscribeMessageType,
+      data: JSON.stringify(ids)
+    })
+  }
+
   private onReceive = (message: WebSocketMessage) => {
     const entity = this.deserialize(message.data as string);
-    this.store.set(entity.id, entity);
+    if (entity) {
+      this.store.set(entity.id, entity);
+    }
   };
 }

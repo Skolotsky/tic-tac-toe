@@ -30,6 +30,15 @@ export class Store<ID, T> {
     return this.entitiesMap.get(id) || null;
   }
 
+  set(id: ID, entity: T) {
+    const existEntity = this.entitiesMap.get(id);
+    if (existEntity) {
+      Object.assign(existEntity, entity);
+    } else {
+      this.entitiesMap.set(id, entity);
+    }
+  }
+
   has(id: ID): boolean {
     return this.entitiesMap.has(id);
   }

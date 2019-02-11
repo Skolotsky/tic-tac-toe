@@ -1,4 +1,4 @@
-import { GUID, Nominal, Tuple } from './types';
+import { GUID, Tuple } from './types';
 
 //
 
@@ -10,18 +10,19 @@ export interface Player {
 
 //
 
-export namespace Field {
-    export type FilledCell = Nominal<'FilledCell', PlayerGUID>;
-    export type Cell = FilledCell | null;
-    export type Row = Tuple<Cell, 10>;
-    export const RowsCount = 10;
-    export const ColumnsCount = 10;
+export enum FilledCellType {
+    Nought = 1,
+    Cross = 2
 }
-export type Field = Tuple<Field.Row, 10>;
+export type FilledCell = FilledCellType;
+export type Cell = FilledCell | null;
+export type Row = Tuple<Cell, 10>;
+export type Field = Tuple<Row, 10>;
 
 //
 
 export interface GameAction<TPlayer = unknown> {
+    filledCell: FilledCell;
     player: TPlayer;
     date: Date;
 }
@@ -48,6 +49,6 @@ export interface GameInfo {
 
 //
 
-export interface GameList<TGame = unknown> {
-    games: TGame[]
+export interface GameList {
+    games: GameGUID[]
 }

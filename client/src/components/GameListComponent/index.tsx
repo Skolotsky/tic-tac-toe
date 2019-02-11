@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Game, GameGUID, PlayerGUID } from '../../common/models';
+import { Game, GameGUID, GameInfo, PlayerGUID } from '../../common/models';
 import GameListView from '../../views/GameListView';
 import { observer } from 'mobx-react';
-import { action, computed, observable } from 'mobx';
-import { gamesStore } from '../../stores/GamesStore';
+import { action, autorun, computed, IReactionDisposer } from 'mobx';
 import { gameListService } from '../../services/GameListService';
 import { gameListStore } from '../../stores/GameListStore';
+import { gameInfosStore } from '../../stores/GameInfosStore';
+import { gameInfosService } from '../../services/GameInfosService';
 
 interface GameListComponentProps {
   onSelectGame: (game: GameGUID) => void
@@ -13,26 +14,45 @@ interface GameListComponentProps {
 
 @observer
 export default class GameListComponent extends Component<GameListComponentProps> {
-  @observable
-  selectedGame: Game<PlayerGUID> | null = null;
+  lastGameIdsSet: Set<GameGUID> = new Set();
+  disposer?: IReactionDisposer;
 
   componentDidMount(): void {
     gameListService.subscribe();
+    this.disposer = autorun(() => {
+      const gameIdsSet = new Set(this.gameIds);
+      const gameIdsToSubscribe = this.gameIds.filter(id => !this.lastGameIdsSet.has(id));
+      const lastGameIds = Array.from(this.lastGameIdsSet.values());
+      const gameIdsToUnsubscribe = lastGameIds.filter(id => !gameIdsSet.has(id));
+      this.lastGameIdsSet = gameIdsSet;
+      gameInfosService.subscribe(gameIdsToSubscribe);
+      gameInfosService.unsubscribe(gameIdsToUnsubscribe);
+    })
   }
 
   componentWillUnmount(): void {
     gameListService.unsubscribe();
+    if (this.disposer) {
+      this.disposer()
+    }
+    const gameIdsToUnsubscribe = Array.from(this.lastGameIdsSet.values());
+    gameInfosService.subscribe(gameIdsToUnsubscribe);
   }
 
   @action
-  onSelectGame = (game: Game<PlayerGUID>) => {
+  onSelectGame = (game: GameInfo) => {
     const { onSelectGame } = this.props;
     onSelectGame(game.id);
   };
 
   @computed
+  get gameIds() {
+    return gameListStore.all;
+  }
+
+  @computed
   get games() {
-    return gamesStore.getList(gameListStore.all);
+    return gameInfosStore.getList(gameListStore.all);
   }
 
   render() {

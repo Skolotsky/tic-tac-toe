@@ -1,28 +1,29 @@
 import React, { Component } from 'react';
 import styles from './styles.module.css';
-import { stringToHexColorString } from '../../lib/stringToHexColorString';
-import { Field } from '../../common/models';
-import { HexColorString } from '../../common/types';
+import { Cell, FilledCellType } from '../../common/models';
 
-const filledCellToHexColorString = (cell: Field.FilledCell): HexColorString  => stringToHexColorString(cell);
+const cellTypeToSymbol = (cellType: FilledCellType): string  => {
+  switch (cellType) {
+    case FilledCellType.Cross:
+      return 'X';
+    case FilledCellType.Nought:
+      return '0';
+  }
+};
 
 interface CellTokenViewProps {
-  cell: Field.Cell
-  isSelfCell: (cell: Field.Cell) => boolean
+  cell: Cell
 }
 
 class CellTokenView extends Component<CellTokenViewProps> {
   render() {
-    const { cell, isSelfCell } = this.props;
+    const { cell } = this.props;
     if (cell === null) {
       return null;
     }
-    const color = filledCellToHexColorString(cell);
-    const isSelf = isSelfCell(cell);
-    console.log(cell, isSelf, color);
     return (
-      <span className={styles.CellTokenView} style={{ color }}>
-        { isSelf ? 'X' : '0' }
+      <span className={styles.CellTokenView}>
+        { cellTypeToSymbol(cell) }
       </span>
     );
   }
