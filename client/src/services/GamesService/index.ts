@@ -1,6 +1,6 @@
 import { webSocketService, WebSocketService } from '../WebSocketService';
 import { GameGUID, Game } from '../../common/models';
-import { StoreService } from '../StoreService';
+import { SyncService } from '../SyncService';
 import { gamesStore, GamesStore } from '../../stores/GamesStore';
 import { deserializeGame } from '../../common/lib/game';
 import { playerService } from '../PlayerService';
@@ -14,7 +14,7 @@ enum ReceivedWebSocketMessageType {
   Entity = 'GAME'
 }
 
-export class GamesService extends StoreService<GameGUID, Game> {
+export class GamesService extends SyncService<Game> {
   constructor(
     store: GamesStore,
     webSocketService: WebSocketService
@@ -36,6 +36,18 @@ export class GamesService extends StoreService<GameGUID, Game> {
         method: 'POST'
       });
     }
+  }
+
+  async newGame(): Promise<GameGUID | null> {
+    const playerId = playerService.self();
+    if (playerId) {
+      const response = await fetch(`/api/game/new/`, {
+        method: 'POST'
+      });
+      const body = await response.json();
+      return body.id || null;
+    }
+    return null;
   }
 
   fillFieldCell(gameId: GameGUID, rowIndex: number, columnIndex: number) {

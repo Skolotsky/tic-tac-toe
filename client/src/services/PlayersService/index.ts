@@ -1,6 +1,6 @@
 import { webSocketService, WebSocketService } from '../WebSocketService';
-import { PlayerGUID, Player } from '../../common/models';
-import { StoreService } from '../StoreService';
+import { Player } from '../../common/models';
+import { SyncService } from '../SyncService';
 import { playersStore, PlayersStore } from '../../stores/PlayersStore';
 import { deserializePlayer } from '../../common/lib/player';
 
@@ -13,7 +13,7 @@ enum ReceivedWebSocketMessageType {
   Entity = 'PLAYER'
 }
 
-export class PlayersService extends StoreService<PlayerGUID, Player> {
+export class PlayersService extends SyncService<Player> {
   constructor(
     store: PlayersStore,
     webSocketService: WebSocketService

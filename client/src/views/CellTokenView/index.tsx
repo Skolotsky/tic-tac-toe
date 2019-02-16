@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styles from './styles.module.css';
 import { Cell, FilledCellType } from '../../common/models';
+import { observer } from 'mobx-react';
 
 const cellTypeToSymbol = (cellType: FilledCellType): string  => {
   switch (cellType) {
@@ -15,6 +16,7 @@ interface CellTokenViewProps {
   cell: Cell
 }
 
+@observer
 class CellTokenView extends Component<CellTokenViewProps> {
   render() {
     const { cell } = this.props;

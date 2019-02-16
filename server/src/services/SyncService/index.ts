@@ -1,12 +1,13 @@
 import { ConnectionId, WebSocketMessage, WebSocketMessageType, WebSocketService } from '../WebSocketService';
 import { autorun, IReactionDisposer } from 'mobx';
-import { IStore } from '../../stores/Store';
+import { EntityProvider } from '@common/store';
+import { Entity } from '@common/types';
 
-export class StoreService<ID extends string, T> {
-  private disposers = new Map<ConnectionId, Map<ID, IReactionDisposer>>();
+export class SyncService<TEntity extends Entity<unknown>> {
+  private disposers = new Map<ConnectionId, Map<TEntity['id'], IReactionDisposer>>();
 
   constructor(
-    private store: IStore<ID, T>,
+    private store: EntityProvider<TEntity>,
     private webSocketService: WebSocketService,
     private sendMessageType: WebSocketMessageType,
     [subscribeMessageType, unsubscribeMessageType]: [WebSocketMessageType, WebSocketMessageType]
@@ -26,12 +27,13 @@ export class StoreService<ID extends string, T> {
   }
 
   private onSubscribe = (message: WebSocketMessage, connectionId: ConnectionId) => {
+    console.log('subscribe', connectionId);
     let disposers = this.disposers.get(connectionId);
     if (!disposers) {
-      disposers = new Map<ID, IReactionDisposer>();
+      disposers = new Map<TEntity['id'], IReactionDisposer>();
       this.disposers.set(connectionId, disposers);
     }
-    const ids = JSON.parse(message.data!) as ID[];
+    const ids = JSON.parse(message.data!) as TEntity['id'][];
     ids.forEach(id => {
       disposers!.set(
         id,
@@ -41,9 +43,10 @@ export class StoreService<ID extends string, T> {
   };
 
   private onUnsubscribe = (message: WebSocketMessage, connectionId: ConnectionId) => {
+    console.log('unsubscribe', connectionId);
     let disposers = this.disposers.get(connectionId);
     if (disposers) {
-      const ids = JSON.parse(message.data!) as ID[];
+      const ids = JSON.parse(message.data!) as TEntity['id'][];
       ids.forEach(id => {
         const disposer = disposers!.get(id);
         if (disposer) {
@@ -64,7 +67,8 @@ export class StoreService<ID extends string, T> {
     }
   };
 
-  private send(id: ID, connectionIds: ConnectionId[]) {
+  private send(id: TEntity['id'], connectionIds: ConnectionId[]) {
+    console.log('send', id, connectionIds.join(', '));
     const entity = this.store.get(id);
     this.webSocketService.send(
       {

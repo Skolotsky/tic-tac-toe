@@ -1,7 +1,7 @@
 import { PlayersStore } from '../../stores/PlayersStore';
 import { WebSocketService } from '../WebSocketService';
-import { Player, PlayerGUID } from '@common/models';
-import { StoreService } from '../StoreService';
+import { Player } from '@common/models';
+import { SyncService } from '../SyncService';
 
 enum ReceivedWebSocketMessageType {
   Subscribe = 'SUBSCRIBE_PLAYER',
@@ -12,7 +12,7 @@ enum SendWebSocketMessageType {
   Entity = 'PLAYER'
 }
 
-export class PlayersService extends StoreService<PlayerGUID, Player> {
+export class PlayersService extends SyncService<Player> {
   constructor(
     store: PlayersStore,
     webSocketService: WebSocketService

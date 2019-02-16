@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import styles from './styles.module.css';
 import { Player } from '../../common/models';
 import PlayerView from '../PlayerView';
+import { observer } from 'mobx-react';
 
 interface PlayerListViewProps {
   players: Player[]
 }
 
+@observer
 class PlayerListView extends Component<PlayerListViewProps> {
   render() {
     const { players } = this.props;

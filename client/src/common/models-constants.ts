@@ -1,4 +1,6 @@
 import { tuple } from './tuple';
 import { Field } from './models';
 
-export const emptyField = tuple(10, () => tuple(10, () => null)) as Field;
+export const ROWS_COUNT = 10;
+export const COLUMNS_COUNT = 10;
+export const emptyField = tuple(ROWS_COUNT, () => tuple(COLUMNS_COUNT, () => null)) as Field;

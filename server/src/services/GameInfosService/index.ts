@@ -1,8 +1,8 @@
 import { GamesStore } from '../../stores/GamesStore';
 import { WebSocketService } from '../WebSocketService';
-import { Game, GameGUID, GameInfo } from '@common/models';
-import { StoreService } from '../StoreService';
-import { IStore } from '../../stores/Store';
+import { GameGUID, GameInfo } from '@common/models';
+import { SyncService } from '../SyncService';
+import { getGameInfo } from '@common/lib/gameInfo';
 
 enum ReceivedWebSocketMessageType {
   Subscribe = 'SUBSCRIBE_GAME_INFO',
@@ -13,25 +13,13 @@ enum SendWebSocketMessageType {
   Entity = 'GAME_INFO'
 }
 
-const getGameInfo = (store: IStore<GameGUID, Game>, id: GameGUID): GameInfo | null => {
-  const game = store.get(id);
-  if (game) {
-    return {
-      id,
-      lastActionDate: game.lastAction ? game.lastAction.date : game.createDate,
-      playersCount: game.players.length
-    }
-  }
-  return null;
-};
-
-export class GameInfosService extends StoreService<GameGUID, GameInfo> {
+export class GameInfosService extends SyncService<GameInfo> {
   constructor(
     store: GamesStore,
     webSocketService: WebSocketService
   ) {
     super(
-      { get: getGameInfo.bind(undefined, store) },
+      { get: (id: GameGUID) => getGameInfo(store, id) },
       webSocketService,
       SendWebSocketMessageType.Entity,
       [ReceivedWebSocketMessageType.Subscribe, ReceivedWebSocketMessageType.Unsubscribe]

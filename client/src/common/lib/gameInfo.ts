@@ -1,10 +1,18 @@
-import { GameInfo } from '../models';
-import { Nominal } from '../types';
+import { Game, GameGUID, GameInfo } from '../models';
+import { EntityProvider } from '../store';
+import { getWonCellType } from './rules';
 
-export type SerializedGameInfoString = Nominal<'SerializedGameString'>;
-
-export const serializeGameInfo = (gameInfo: GameInfo): string => {
-  return JSON.stringify(gameInfo) as SerializedGameInfoString;
+export const getGameInfo = (store: EntityProvider<Game>, id: GameGUID): GameInfo | null => {
+  const game = store.get(id);
+  if (game) {
+    return {
+      id,
+      lastActionDate: game.lastAction ? game.lastAction.date : game.createDate,
+      playersCount: game.players.length,
+      finished: !!getWonCellType(game)
+    }
+  }
+  return null;
 };
 
 export const deserializeGameInfo = (string: string): GameInfo => {

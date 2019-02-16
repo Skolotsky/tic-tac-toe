@@ -8,6 +8,7 @@ import { playersStore } from '../../stores/PlayersStore';
 import { gamesStore } from '../../stores/GamesStore';
 import { gamesService } from '../../services/GamesService';
 import { playersService } from '../../services/PlayersService';
+import { getAvailableCellType } from '../../common/lib/rules';
 
 interface GameComponentProps {
   game: GameGUID;
@@ -17,12 +18,15 @@ interface GameComponentProps {
 @observer
 export default class GameComponent extends Component<GameComponentProps> {
   lastPlayerIdsSet: Set<PlayerGUID> = new Set();
-  disposer?: IReactionDisposer;
+  disposers: IReactionDisposer[] = [];
 
   componentDidMount(): void {
-    const { game } = this.props;
-    gamesService.subscribe([game]);
-    this.disposer = autorun(() => {
+    console.log('mount');
+    this.disposers.push(autorun(() => {
+      const { game } = this.props;
+      gamesService.subscribe([game]);
+    }));
+    this.disposers.push(autorun(() => {
       const playerIdsSet = this.playerIdsSet;
       const playerIds = Array.from(playerIdsSet.values());
       const playerIdsToSubscribe = playerIds.filter(id => !this.lastPlayerIdsSet.has(id));
@@ -31,12 +35,20 @@ export default class GameComponent extends Component<GameComponentProps> {
       this.lastPlayerIdsSet = playerIdsSet;
       playersService.subscribe(playerIdsToSubscribe);
       playersService.unsubscribe(playerIdsToUnsubscribe);
-    })
+    }));
   }
 
   componentWillUnmount(): void {
+    console.log('unmount');
     const { game } = this.props;
     gamesService.unsubscribe([game]);
+    this.disposers.forEach(disposer => disposer());
+  }
+
+  componentWillReceiveProps(nextProps: Readonly<GameComponentProps>): void {
+    if (nextProps.game !== this.props.game) {
+      gamesService.unsubscribe([this.props.game]);
+    }
   }
 
   @computed
@@ -76,8 +88,11 @@ export default class GameComponent extends Component<GameComponentProps> {
 
   @action
   private onSelectCell = (rowIndex: number, columnIndex: number) => {
-    const { game } = this.props;
-    gamesService.fillFieldCell(game, rowIndex, columnIndex);
+    const { player } = this.props;
+    const { game } = this;
+    if (game && getAvailableCellType(player, game, rowIndex, columnIndex)) {
+      gamesService.fillFieldCell(game.id, rowIndex, columnIndex);
+    }
   };
 
   render() {

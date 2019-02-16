@@ -1,5 +1,6 @@
 import { URLString } from '../../common/types';
 import { action, computed, observable, when } from 'mobx';
+import { PING_INTERVAL } from '../../../../server/src/services/WebSocketService';
 
 enum WebSocketServiceState {
   CONNECTING = 'CONNECTING',
@@ -8,6 +9,10 @@ enum WebSocketServiceState {
 }
 
 export type WebSocketMessageType = string;
+export enum WebSocketMessageTypes {
+  Ping = 'PING',
+  Pong = 'PONG'
+}
 
 export interface WebSocketMessage {
   type: WebSocketMessageType,
@@ -30,6 +35,7 @@ export class WebSocketService {
       () => this.state === WebSocketServiceState.DISCONNECTED,
       this.connect
     );
+    this.on(WebSocketMessageTypes.Ping, this.pong);
   }
 
   @computed
@@ -53,6 +59,12 @@ export class WebSocketService {
     }
     handlers.add(handler);
   }
+
+  private pong = () => {
+    this.send({
+      type: WebSocketMessageTypes.Pong
+    })
+  };
 
   @action
   private onOpen = () => {
@@ -92,4 +104,4 @@ export class WebSocketService {
   };
 }
 
-export const webSocketService = new WebSocketService('ws://localhost:8999' as URLString);
+export const webSocketService = new WebSocketService(`ws://${ window.location.host }/ws` as URLString);

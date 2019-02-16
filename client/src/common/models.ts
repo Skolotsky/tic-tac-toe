@@ -45,6 +45,7 @@ export interface GameInfo {
     id: GameGUID;
     lastActionDate: Date;
     playersCount: number;
+    finished: boolean;
 }
 
 //

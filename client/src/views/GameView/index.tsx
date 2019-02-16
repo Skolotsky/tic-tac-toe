@@ -5,6 +5,8 @@ import PlayerView from '../PlayerView';
 import PlayerListView from '../PlayerListView';
 import FieldView from '../FieldView';
 import { observer } from 'mobx-react';
+import { getWonCellType } from '../../common/lib/rules';
+import CellTokenView from '../CellTokenView';
 
 interface GameViewProps {
   player: Player;
@@ -16,11 +18,20 @@ interface GameViewProps {
 class GameView extends Component<GameViewProps> {
   render() {
     const { game, onSelectCell } = this.props;
+    const wonCellType = getWonCellType(game);
     return (
       <div className={styles.GameView}>
         <PlayerListView players={game.players}/>
         Last player: { game.lastAction ? <PlayerView player={game.lastAction.player}/> : 'nobody' }
         <FieldView field={game.field} onSelectCell={onSelectCell}/>
+        {
+          wonCellType ?
+            <>
+              Winner is <CellTokenView cell={wonCellType}/>
+              { game.lastAction ? <>(<PlayerView player={game.lastAction.player}/>)</> : null }
+            </> :
+            null
+        }
       </div>
     );
   }

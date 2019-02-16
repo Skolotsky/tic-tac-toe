@@ -1,11 +1,12 @@
 import { WebSocketMessage, WebSocketMessageType, WebSocketService } from '../WebSocketService';
-import { Store } from '../../stores/Store';
+import { Entity } from '../../common/types';
+import { EntityConsumer } from '../../common/store';
 
-export class StoreService<ID extends string, T extends { id: ID }> {
+export class SyncService<TEntity extends Entity<unknown>> {
   constructor(
-    private store: Store<ID, T>,
+    private store: EntityConsumer<TEntity>,
     private webSocketService: WebSocketService,
-    private deserialize: (data: string) => T,
+    private deserialize: (data: string) => TEntity,
     private subscribeMessageType: WebSocketMessageType,
     private unsubscribeMessageType: WebSocketMessageType,
     receiveMessageType: WebSocketMessageType
@@ -16,7 +17,7 @@ export class StoreService<ID extends string, T extends { id: ID }> {
     );
   }
 
-  subscribe(ids: ID[]) {
+  subscribe(ids: TEntity['id'][]) {
     if (!ids.length) {
       return;
     }
@@ -26,7 +27,7 @@ export class StoreService<ID extends string, T extends { id: ID }> {
     })
   }
 
-  unsubscribe(ids: ID[]) {
+  unsubscribe(ids: TEntity['id'][]) {
     if (!ids.length) {
       return;
     }

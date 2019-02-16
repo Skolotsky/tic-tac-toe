@@ -8,6 +8,7 @@ import { webSocketService } from './services/WebSocketService';
 import GameListComponent from './components/GameListComponent';
 import { playerService } from './services/PlayerService';
 import { gamesService } from './services/GamesService';
+import ButtonView from './views/ButtonView';
 
 @observer
 class App extends Component {
@@ -15,9 +16,16 @@ class App extends Component {
   selectedGame: GameGUID | null = null;
 
   @action
-  onSelectGame = (id: GameGUID) => {
+  onSelectGame = (id: GameGUID | null) => {
     this.selectedGame = id;
-    gamesService.joinGame(id);
+    if (id) {
+      gamesService.joinGame(id);
+    }
+  };
+
+  onNewGame = async () => {
+    const id = await gamesService.newGame();
+    this.onSelectGame(id);
   };
 
   render() {
@@ -30,6 +38,7 @@ class App extends Component {
       return (
         <div className="App">
           <GameListComponent onSelectGame={ onSelectGame }/>
+          <ButtonView onClick={this.onNewGame}>New Game</ButtonView>
           {
             selectedGame ?
               <GameComponent

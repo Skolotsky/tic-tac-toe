@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import styles from './styles.module.css';
+import { observer } from 'mobx-react';
 
 interface DateViewProps {
   date: Date
 }
 
+@observer
 class DateView extends Component<DateViewProps> {
   render() {
     const { date } = this.props;

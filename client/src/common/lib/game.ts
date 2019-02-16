@@ -1,5 +1,7 @@
-import { Game, Player, PlayerGUID } from '../models';
+import { Game, GameGUID, Player, PlayerGUID } from '../models';
 import { EntitiesProvider } from '../store';
+import { emptyField } from '../models-constants';
+const uuidv1 = require('uuid/v1');
 
 export const denormalizeGame = (game: Game<PlayerGUID>, playersStore: EntitiesProvider<Player>): Game<Player> | null => {
   let lastAction = null;
@@ -23,9 +25,6 @@ export const denormalizeGame = (game: Game<PlayerGUID>, playersStore: EntitiesPr
     lastAction: lastAction
   };
 };
-export const serializeGame = (game: Game<PlayerGUID>): string => {
-  return JSON.stringify(game);
-};
 
 export const deserializeGame = (string: string): Game<PlayerGUID> => {
   const game = JSON.parse(string);
@@ -34,4 +33,14 @@ export const deserializeGame = (string: string): Game<PlayerGUID> => {
     game.lastAction.date = new Date(game.lastAction.date);
   }
   return game;
+};
+
+export const createGame = (): Game<PlayerGUID> => {
+  return {
+    id: uuidv1() as GameGUID,
+    createDate: new Date(),
+    players: [],
+    lastAction: null,
+    field: emptyField
+  };
 };
