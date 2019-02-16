@@ -12,6 +12,7 @@ import { GameGUID, PlayerGUID } from '@common/models';
 import { action } from 'mobx';
 import { fillFieldCell } from '@common/lib/rules';
 import { createGame } from '@common/lib/game';
+import { createPlayer } from '@common/lib/player';
 const uuidv1 = require('uuid/v1');
 
 const app = express();
@@ -22,10 +23,10 @@ const server = http.createServer(app);
 
 //initialize the WebSocket server instance
 const webSocketService = new WebSocketService(server);
-const gameListService = new GameListSyncService(gamesStore, webSocketService);
-const gameInfosService = new GameInfosSyncService(gamesStore, webSocketService);
-const gamesService = new GamesSyncService(gamesStore, webSocketService);
-const playersService = new PlayersSyncService(playersStore, webSocketService);
+const gameListSyncService = new GameListSyncService(gamesStore, webSocketService);
+const gameInfosSyncService = new GameInfosSyncService(gamesStore, webSocketService);
+const gamesSyncService = new GamesSyncService(gamesStore, webSocketService);
+const playersSyncService = new PlayersSyncService(playersStore, webSocketService);
 
 //start our server
 server.listen(process.env.PORT || 8999, () => {
@@ -38,11 +39,13 @@ server.listen(process.env.PORT || 8999, () => {
 });
 
 app.post('/api/player', function (req: express.Request, res: express.Response) {
-  const requestedId = req.body.requestedId as PlayerGUID | null;
-  const id = requestedId || uuidv1() as PlayerGUID;
+  let id = req.body.requestedId as PlayerGUID | null;
+  if (!id || !playersStore.get(id)) {
+    const player = createPlayer();
+    playersStore.set(player.id, player);
+    id = player.id;
+  }
   console.log('player joined', id);
-  playersStore.set(id, { id });
-
   res.json({ id });
 });
 

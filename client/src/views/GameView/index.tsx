@@ -21,8 +21,6 @@ class GameView extends Component<GameViewProps> {
     const wonCellType = getWonCellType(game);
     return (
       <div className={styles.GameView}>
-        <PlayerListView players={game.players}/>
-        Last player: { game.lastAction ? <PlayerView player={game.lastAction.player}/> : 'nobody' }
         <FieldView field={game.field} onSelectCell={onSelectCell}/>
         {
           wonCellType ?
@@ -32,6 +30,8 @@ class GameView extends Component<GameViewProps> {
             </> :
             null
         }
+        <PlayerListView players={game.players}/>
+        Last player: { game.lastAction ? <PlayerView player={game.lastAction.player}/> : 'nobody' }
       </div>
     );
   }

@@ -21,21 +21,20 @@ export class PlayerService {
     return this.id;
   }
 
-  private async fetchId(id: PlayerGUID | null) {
+  private async fetchId(lastId: PlayerGUID | null) {
     const response = await fetch('/api/player', {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
       },
       body:  JSON.stringify({
-        requestedId: id
+        requestedId: lastId
       })
     });
     if (response.status === 200) {
       const { id } = await response.json();
       if (id) {
         this.setId(id as PlayerGUID);
-        localStorage.setItem('playerId', id);
       }
     }
   }
@@ -43,6 +42,7 @@ export class PlayerService {
   @action
   private setId(id: PlayerGUID) {
     this.id = id;
+    localStorage.setItem('playerId', id);
   }
 }
 

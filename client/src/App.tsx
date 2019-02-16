@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import './App.css';
+import styles from './styles.module.css';
 import { GameGUID } from './common/models';
 import { observer } from 'mobx-react';
 import { action, observable } from 'mobx';
-import GameComponent from './components/GameComponent';
 import { webSocketService } from './services/WebSocketService';
-import GameListComponent from './components/GameListComponent';
 import { playerService } from './services/PlayerService';
-import { gamesSyncService } from './services/GamesSyncService';
+import MainPage from './pages/MainPage';
+import GamePage from './pages/GamePage';
 
 @observer
 class App extends Component {
@@ -15,42 +14,32 @@ class App extends Component {
   selectedGame: GameGUID | null = null;
 
   @action
-  onSelectGame = (id: GameGUID | null) => {
+  onJoinedGame = (id: GameGUID) => {
     this.selectedGame = id;
-    if (id) {
-      gamesSyncService.joinGame(id);
-    }
   };
 
-  onNewGame = async () => {
-    const id = await gamesSyncService.newGame();
-    this.onSelectGame(id);
+  @action
+  onBack = () => {
+    this.selectedGame = null;
   };
+
 
   render() {
-    const { selectedGame, onSelectGame, onNewGame } = this;
+    const { selectedGame, onJoinedGame, onBack } = this;
     const self = playerService.self();
     if (!self) {
       return 'Getting player...';
     }
-    if (webSocketService.isConnected) {
-      return (
-        <div className="App">
-          <GameListComponent onSelectGame={ onSelectGame } onNewGame={ onNewGame }/>
-          {
-            selectedGame ?
-              <GameComponent
-                player={ self }
-                game={ selectedGame }
-              /> :
-              null
-          }
-        </div>
-      );
+    if (!webSocketService.isConnected) {
+      return 'Connecting...';
     }
     return (
-      <div className="App">
-        Connecting...
+      <div className={styles.App}>
+        {
+          selectedGame ?
+            <GamePage game={ selectedGame } self={ self } onBack={ onBack }/> :
+            <MainPage self={self} onJoinedGame={ onJoinedGame }/>
+        }
       </div>
     );
   }

@@ -3,19 +3,19 @@ import styles from './styles.module.css';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 
-interface ButtonViewProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface HeaderItemViewProps extends React.ButtonHTMLAttributes<HTMLDivElement> {
 }
 
 @observer
-class ButtonView extends Component<ButtonViewProps> {
+class HeaderItemView extends Component<HeaderItemViewProps> {
   render() {
     const { className, ...props } = this.props;
     return (
-      <button className={ classNames([ styles.ButtonView, className ]) } { ...props }>
+      <div className={ classNames([ styles.HeaderItemView, className ]) } { ...props }>
         {this.props.children}
-      </button>
+      </div>
     );
   }
 }
 
-export default ButtonView;
+export default HeaderItemView;

@@ -14,8 +14,8 @@ class PlayerView extends Component<PlayerViewProps> {
     const { player } = this.props;
     const color = playerGUIDToHexColorString(player.id);
     return (
-      <span className={styles.PlayerView} style={{ color }}>
-        {player.id}
+      <span className={styles.PlayerView} style={{ color }} title={player.name}>
+        { player.name }
       </span>
     );
   }

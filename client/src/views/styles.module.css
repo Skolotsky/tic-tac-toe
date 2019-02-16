@@ -1,0 +1,17 @@
+.title {
+    width: 530px;
+    letter-spacing: 0.5em;
+    background-color: #E0F3D7;
+}
+
+.player {
+    width: 175px;
+    background-color: #DDE3F6;
+}
+
+.player span {
+    max-width: 100px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

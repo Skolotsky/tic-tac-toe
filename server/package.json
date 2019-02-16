@@ -2,8 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "scripts": {
-    "start": "tsc && node ./src/index.js",
-    "ts-start": "ts-node ./src/index.ts"
+    "start": "ts-node ./src/index.ts"
   },
   "dependencies": {
     "express": "^4.16.4",

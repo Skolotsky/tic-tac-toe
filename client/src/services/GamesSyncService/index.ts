@@ -29,23 +29,27 @@ export class GamesSyncService extends SyncService<Game> {
     );
   }
 
-  joinGame(gameId: GameGUID) {
+  async joinGame(gameId: GameGUID) {
     const playerId = playerService.self();
     if (playerId) {
-      return fetch(`/api/game/${ gameId.replace(/-/g, '_') }/join/${ playerId.replace(/-/g, '_') }`, {
+      const response = await fetch(`/api/game/${ gameId.replace(/-/g, '_') }/join/${ playerId.replace(/-/g, '_') }`, {
         method: 'POST'
       });
+      return response.ok;
     }
+    return false;
   }
 
-  async newGame(): Promise<GameGUID | null> {
+  async newGame() {
     const playerId = playerService.self();
     if (playerId) {
       const response = await fetch(`/api/game/new/`, {
         method: 'POST'
       });
-      const body = await response.json();
-      return body.id || null;
+      if (response.ok) {
+        const body = await response.json();
+        return body.id as (GameGUID | null) || null;
+      }
     }
     return null;
   }

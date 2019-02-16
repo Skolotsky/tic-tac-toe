@@ -6,6 +6,7 @@ export type PlayerGUID = GUID<'Player'>;
 
 export interface Player {
     id: PlayerGUID;
+    name: string;
 }
 
 //
