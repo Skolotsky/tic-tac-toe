@@ -7,6 +7,7 @@ export const getGameInfo = (store: EntityProvider<Game>, id: GameGUID): GameInfo
   if (game) {
     return {
       id,
+      name: game.name,
       lastActionDate: game.lastAction ? game.lastAction.date : game.createDate,
       playersCount: game.players.length,
       finished: !!getWonCellType(game)

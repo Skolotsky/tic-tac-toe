@@ -7,11 +7,10 @@ import { gameListSyncService } from '../../services/GameListSyncService';
 import { gameListStore } from '../../stores/GameListStore';
 import { gameInfosStore } from '../../stores/GameInfosStore';
 import { gameInfosSyncService } from '../../services/GameInfosSyncService';
-import ButtonView from '../../views/ButtonView';
+import { gamesSyncService } from '../../services/GamesSyncService';
 
 interface GameListComponentProps {
   onSelectGame: (game: GameGUID) => void
-  onNewGame: () => void
 }
 
 @observer
@@ -46,9 +45,12 @@ export default class GameListComponent extends Component<GameListComponentProps>
     onSelectGame(game.id);
   };
 
-  onNewGame = () => {
-    const { onNewGame } = this.props;
-    onNewGame();
+  onNewGame = async () => {
+    const { onSelectGame } = this.props;
+    const id = await gamesSyncService.newGame();
+    if (id) {
+      onSelectGame(id);
+    }
   };
 
   @computed
@@ -64,10 +66,7 @@ export default class GameListComponent extends Component<GameListComponentProps>
   render() {
     const { games, onSelectGame, onNewGame } = this;
     if (games) {
-      return <>
-        <GameListView games={ games } onSelectGame={ onSelectGame }/>
-        <ButtonView onClick={ onNewGame }>New Game</ButtonView>
-      </>;
+      return <GameListView games={ games } onSelectGame={ onSelectGame } onNewGame={onNewGame}/>;
     } else {
       return 'Loading...';
     }

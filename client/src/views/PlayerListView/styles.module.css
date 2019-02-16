@@ -1,3 +1,38 @@
 .PlayerListView {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
 
+.PlayerListView>* + * {
+    margin-top: 8px;
+}
+
+.caption {
+    margin-top: 24px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex: 0 0 auto;
+    height: 52px;
+    background-color: #F0ECE7;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.row + .row {
+    margin-top: 12px;
+}
+
+.body{
+    width: calc(100% - 6px);
+    display: flex;
+    height: 600px;
+    flex-direction: column;
+    border: 3px solid #D1D1D1;
+    overflow-y: scroll;
 }

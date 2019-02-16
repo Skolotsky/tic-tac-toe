@@ -34,6 +34,7 @@ export type GameGUID = GUID<'Game'>;
 
 export interface Game<TPlayer = unknown> {
     id: GameGUID;
+    name: string;
     createDate: Date;
     players: TPlayer[];
     field: Field;
@@ -44,6 +45,7 @@ export interface Game<TPlayer = unknown> {
 
 export interface GameInfo {
     id: GameGUID;
+    name: string;
     lastActionDate: Date;
     playersCount: number;
     finished: boolean;

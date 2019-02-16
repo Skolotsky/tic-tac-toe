@@ -9,9 +9,10 @@ import HeaderItemView from '../../views/HeaderItemView';
 import { action, autorun, computed, IReactionDisposer } from 'mobx';
 import { gamesSyncService } from '../../services/GamesSyncService';
 import { gamesStore } from '../../stores/GamesStore';
-import { getAvailableCellType } from '../../common/lib/rules';
+import { getAvailableCellType, getWonCellType } from '../../common/lib/rules';
 import FieldComponent from '../../components/FieldComponent';
 import GamePlayersComponent from '../../components/GamePlayersComponent';
+import CellTokenView from '../../views/CellTokenView';
 
 interface GamePageProps {
   game: GameGUID;
@@ -63,6 +64,7 @@ class GamePage extends Component<GamePageProps> {
     if (!game) {
       return 'Loading...';
     }
+    const wonCellType = getWonCellType(game);
     return (
       <LayoutView>
         <LayoutView.HeaderLeft>
@@ -74,6 +76,31 @@ class GamePage extends Component<GamePageProps> {
         <LayoutView.HeaderRight>
           <HeaderItemView className={commonStyles.player}><PlayerComponent player={self}/></HeaderItemView>
         </LayoutView.HeaderRight>
+        <LayoutView.BodyLeft>
+          <div>Game name</div>
+          <div className={styles.gameName}>
+            { game.name }
+          </div>
+          {
+            wonCellType && (
+              <>
+                <div className={styles.winnerPlayer}>
+                  {
+                    game.lastAction ?
+                      <PlayerComponent player={game.lastAction.player}/> :
+                      <>Nobody</>
+                  }
+                </div>
+                <div>
+                  WIN
+                </div>
+                <div className={styles.winnerToken}>
+                  <CellTokenView cell={wonCellType}/>
+                </div>
+              </>
+            )
+          }
+        </LayoutView.BodyLeft>
         <LayoutView.BodyCenter>
           <FieldComponent
             player={ self }
@@ -81,13 +108,14 @@ class GamePage extends Component<GamePageProps> {
           />
         </LayoutView.BodyCenter>
         <LayoutView.BodyRight>
-          <div>Last player:</div>
-          {
-            game.lastAction ?
-              <PlayerComponent player={game.lastAction.player}/> :
-              <>Nobody</>
-          }
-          <div>Room:</div>
+          <div>Last player</div>
+          <div className={styles.lastPlayer}>
+            {
+              game.lastAction ?
+                <PlayerComponent player={game.lastAction.player}/> :
+                <>Nobody</>
+            }
+          </div>
           <GamePlayersComponent game={game.id}/>
         </LayoutView.BodyRight>
       </LayoutView>

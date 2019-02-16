@@ -24,16 +24,9 @@ class MainPage extends Component<MainPageProps> {
     }
   };
 
-  onNewGame = async () => {
-    const id = await gamesSyncService.newGame();
-    if (id) {
-      return this.onSelectGame(id);
-    }
-  };
-
   render() {
     const { self } = this.props;
-    const { onSelectGame, onNewGame } = this;
+    const { onSelectGame } = this;
     return (
       <LayoutView>
         <LayoutView.HeaderCenter>
@@ -43,7 +36,7 @@ class MainPage extends Component<MainPageProps> {
           <HeaderItemView className={commonStyles.player}><PlayerComponent player={self}/></HeaderItemView>
         </LayoutView.HeaderRight>
         <LayoutView.BodyCenter>
-          <GameListComponent onSelectGame={ onSelectGame } onNewGame={ onNewGame }/>
+          <GameListComponent onSelectGame={ onSelectGame }/>
         </LayoutView.BodyCenter>
       </LayoutView>
     );

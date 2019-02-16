@@ -33,20 +33,30 @@
 
 .bodyLeft {
     grid-area: body-left;
-    background-color: #F2F2F2;
-}
-
-.bodyCenter {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: start;
-    grid-area: body-center;
-    background-color: #F2F2F2;
     padding: 20px;
+    background-color: #F2F2F2;
+}
+
+.bodyCenter {
+    grid-area: body-center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 20px;
+    background-color: #F2F2F2;
 }
 
 .bodyRight {
     grid-area: body-right;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 20px;
     background-color: #F2F2F2;
 }

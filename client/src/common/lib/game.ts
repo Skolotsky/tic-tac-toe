@@ -35,9 +35,12 @@ export const deserializeGame = (string: string): Game<PlayerGUID> => {
   return game;
 };
 
+let gameNameCounter = 1;
+
 export const createGame = (): Game<PlayerGUID> => {
   return {
     id: uuidv1() as GameGUID,
+    name: `Game ${gameNameCounter++}`,
     createDate: new Date(),
     players: [],
     lastAction: null,

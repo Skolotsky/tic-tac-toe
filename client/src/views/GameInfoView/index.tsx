@@ -16,7 +16,7 @@ class GameInfoView extends Component<GameInfoViewProps> {
     const { game, onClick } = this.props;
     return (
       <div className={styles.GameInfoView} onClick={onClick}>
-        { game.playersCount }
+        { game.name } { game.playersCount }
         <DateView date={game.lastActionDate}/>
       </div>
     );

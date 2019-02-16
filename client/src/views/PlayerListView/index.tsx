@@ -14,11 +14,14 @@ class PlayerListView extends Component<PlayerListViewProps> {
     const { players } = this.props;
     return (
       <div className={styles.PlayerListView}>
-        {
-          players.map(player =>
-            <div key={player.id}><PlayerView player={player}/></div>
-          )
-        }
+        <div className={styles.caption}>Room</div>
+        <div className={styles.body}>
+          {
+            players.map(player =>
+              <div key={player.id} className={styles.row}><PlayerView player={player}/></div>
+            )
+          }
+        </div>
       </div>
     );
   }

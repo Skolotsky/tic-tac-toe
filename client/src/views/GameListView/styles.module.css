@@ -1,3 +1,77 @@
 .GameListView {
-    border: 1px solid gray;
+    width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.GameListView>* + * {
+    margin-top: 8px;
+}
+
+.newGame {
+    width: 350px;
+    height: 90px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #E0F3D7;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    letter-spacing: 0.5em;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.caption {
+    letter-spacing: 0.5em;
+    margin-top: 24px;
+}
+
+.row,
+.header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.row {
+    flex: 0 0 auto;
+    height: 52px;
+    background-color: #F0ECE7;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+.row + .row {
+    margin-top: 12px;
+}
+
+.body{
+    width: 100%;
+    display: flex;
+    height: 600px;
+    flex-direction: column;
+    border: 3px solid #D1D1D1;
+    overflow-y: scroll;
+}
+
+.nameColumn {
+    width: 40%;
+    padding: 10px;
+}
+
+.playersColumn {
+    width: 20%;
+    text-align: center;
+    padding: 10px;
+}
+
+.dateColumn {
+    width: 40%;
+    text-align: right;
+    padding: 10px;
 }
