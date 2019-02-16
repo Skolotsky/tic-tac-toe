@@ -6,8 +6,8 @@ import GameView from '../../views/GameView';
 import { denormalizeGame } from '../../common/lib/game';
 import { playersStore } from '../../stores/PlayersStore';
 import { gamesStore } from '../../stores/GamesStore';
-import { gamesService } from '../../services/GamesService';
-import { playersService } from '../../services/PlayersService';
+import { gamesSyncService } from '../../services/GamesSyncService';
+import { playersSyncService } from '../../services/PlayersSyncService';
 import { getAvailableCellType } from '../../common/lib/rules';
 
 interface GameComponentProps {
@@ -24,7 +24,7 @@ export default class GameComponent extends Component<GameComponentProps> {
     console.log('mount');
     this.disposers.push(autorun(() => {
       const { game } = this.props;
-      gamesService.subscribe([game]);
+      gamesSyncService.subscribe([game]);
     }));
     this.disposers.push(autorun(() => {
       const playerIdsSet = this.playerIdsSet;
@@ -33,21 +33,21 @@ export default class GameComponent extends Component<GameComponentProps> {
       const lastGameIds = Array.from(this.lastPlayerIdsSet.values());
       const playerIdsToUnsubscribe = lastGameIds.filter(id => !playerIdsSet.has(id));
       this.lastPlayerIdsSet = playerIdsSet;
-      playersService.subscribe(playerIdsToSubscribe);
-      playersService.unsubscribe(playerIdsToUnsubscribe);
+      playersSyncService.subscribe(playerIdsToSubscribe);
+      playersSyncService.unsubscribe(playerIdsToUnsubscribe);
     }));
   }
 
   componentWillUnmount(): void {
     console.log('unmount');
     const { game } = this.props;
-    gamesService.unsubscribe([game]);
+    gamesSyncService.unsubscribe([game]);
     this.disposers.forEach(disposer => disposer());
   }
 
   componentWillReceiveProps(nextProps: Readonly<GameComponentProps>): void {
     if (nextProps.game !== this.props.game) {
-      gamesService.unsubscribe([this.props.game]);
+      gamesSyncService.unsubscribe([this.props.game]);
     }
   }
 
@@ -91,7 +91,7 @@ export default class GameComponent extends Component<GameComponentProps> {
     const { player } = this.props;
     const { game } = this;
     if (game && getAvailableCellType(player, game, rowIndex, columnIndex)) {
-      gamesService.fillFieldCell(game.id, rowIndex, columnIndex);
+      gamesSyncService.fillFieldCell(game.id, rowIndex, columnIndex);
     }
   };
 

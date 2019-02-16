@@ -1,6 +1,6 @@
 import { PlayerGUID } from '../../common/models';
 import { action, autorun, observable } from 'mobx';
-import { playersService } from '../PlayersService';
+import { playersSyncService } from '../PlayersSyncService';
 import { webSocketService } from '../WebSocketService';
 
 export class PlayerService {
@@ -12,7 +12,7 @@ export class PlayerService {
     this.fetchId(id);
     autorun(() => {
       if (webSocketService.isConnected && this.id) {
-        playersService.subscribe([this.id]);
+        playersSyncService.subscribe([this.id]);
       }
     })
   }

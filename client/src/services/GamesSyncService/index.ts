@@ -14,7 +14,7 @@ enum ReceivedWebSocketMessageType {
   Entity = 'GAME'
 }
 
-export class GamesService extends SyncService<Game> {
+export class GamesSyncService extends SyncService<Game> {
   constructor(
     store: GamesStore,
     webSocketService: WebSocketService
@@ -68,4 +68,4 @@ export class GamesService extends SyncService<Game> {
   }
 }
 
-export const gamesService = new GamesService(gamesStore, webSocketService);
+export const gamesSyncService = new GamesSyncService(gamesStore, webSocketService);

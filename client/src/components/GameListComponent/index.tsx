@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Game, GameGUID, GameInfo, PlayerGUID } from '../../common/models';
+import { GameGUID, GameInfo } from '../../common/models';
 import GameListView from '../../views/GameListView';
 import { observer } from 'mobx-react';
-import { action, autorun, computed, IReactionDisposer } from 'mobx';
-import { gameListService } from '../../services/GameListService';
+import { autorun, computed, IReactionDisposer } from 'mobx';
+import { gameListSyncService } from '../../services/GameListSyncService';
 import { gameListStore } from '../../stores/GameListStore';
 import { gameInfosStore } from '../../stores/GameInfosStore';
-import { gameInfosService } from '../../services/GameInfosService';
+import { gameInfosSyncService } from '../../services/GameInfosSyncService';
+import ButtonView from '../../views/ButtonView';
 
 interface GameListComponentProps {
   onSelectGame: (game: GameGUID) => void
+  onNewGame: () => void
 }
 
 @observer
@@ -18,31 +20,35 @@ export default class GameListComponent extends Component<GameListComponentProps>
   disposer?: IReactionDisposer;
 
   componentDidMount(): void {
-    gameListService.subscribe();
+    gameListSyncService.subscribe();
     this.disposer = autorun(() => {
       const gameIdsSet = new Set(this.gameIds);
       const gameIdsToSubscribe = this.gameIds.filter(id => !this.lastGameIdsSet.has(id));
       const lastGameIds = Array.from(this.lastGameIdsSet.values());
       const gameIdsToUnsubscribe = lastGameIds.filter(id => !gameIdsSet.has(id));
       this.lastGameIdsSet = gameIdsSet;
-      gameInfosService.subscribe(gameIdsToSubscribe);
-      gameInfosService.unsubscribe(gameIdsToUnsubscribe);
+      gameInfosSyncService.subscribe(gameIdsToSubscribe);
+      gameInfosSyncService.unsubscribe(gameIdsToUnsubscribe);
     })
   }
 
   componentWillUnmount(): void {
-    gameListService.unsubscribe();
+    gameListSyncService.unsubscribe();
     if (this.disposer) {
       this.disposer()
     }
     const gameIdsToUnsubscribe = Array.from(this.lastGameIdsSet.values());
-    gameInfosService.subscribe(gameIdsToUnsubscribe);
+    gameInfosSyncService.subscribe(gameIdsToUnsubscribe);
   }
 
-  @action
   onSelectGame = (game: GameInfo) => {
     const { onSelectGame } = this.props;
     onSelectGame(game.id);
+  };
+
+  onNewGame = () => {
+    const { onNewGame } = this.props;
+    onNewGame();
   };
 
   @computed
@@ -56,9 +62,12 @@ export default class GameListComponent extends Component<GameListComponentProps>
   }
 
   render() {
-    const { games, onSelectGame } = this;
+    const { games, onSelectGame, onNewGame } = this;
     if (games) {
-      return <GameListView games={ games } onSelectGame={ onSelectGame }/>;
+      return <>
+        <GameListView games={ games } onSelectGame={ onSelectGame }/>
+        <ButtonView onClick={ onNewGame }>New Game</ButtonView>
+      </>;
     } else {
       return 'Loading...';
     }

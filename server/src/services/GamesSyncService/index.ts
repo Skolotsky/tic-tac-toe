@@ -1,20 +1,20 @@
-import { PlayersStore } from '../../stores/PlayersStore';
+import { GamesStore } from '../../stores/GamesStore';
 import { WebSocketService } from '../WebSocketService';
-import { Player } from '@common/models';
+import { Game } from '@common/models';
 import { SyncService } from '../SyncService';
 
 enum ReceivedWebSocketMessageType {
-  Subscribe = 'SUBSCRIBE_PLAYER',
-  Unsubscribe = 'UNSUBSCRIBE_PLAYER'
+  Subscribe = 'SUBSCRIBE_GAME',
+  Unsubscribe = 'UNSUBSCRIBE_GAME'
 }
 
 enum SendWebSocketMessageType {
-  Entity = 'PLAYER'
+  Entity = 'GAME'
 }
 
-export class PlayersService extends SyncService<Player> {
+export class GamesSyncService extends SyncService<Game> {
   constructor(
-    store: PlayersStore,
+    store: GamesStore,
     webSocketService: WebSocketService
   ) {
     super(

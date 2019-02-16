@@ -13,7 +13,7 @@ enum SendWebSocketMessageType {
   Entity = 'GAME_INFO'
 }
 
-export class GameInfosService extends SyncService<GameInfo> {
+export class GameInfosSyncService extends SyncService<GameInfo> {
   constructor(
     store: GamesStore,
     webSocketService: WebSocketService

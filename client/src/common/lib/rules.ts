@@ -60,6 +60,12 @@ const getWonCellTypeFromPosition = (
   if (!rowDirection && !columnDirection) {
     return null;
   }
+  if (!rowIndexInBounds(fromRowIndex)) {
+    return null
+  }
+  if (!columnIndexInBounds(fromColumnIndex)) {
+    return null
+  }
   if (!rowIndexInBounds(fromRowIndex + COUNT_TO_WIN * rowDirection)) {
     return null
   }
@@ -72,11 +78,11 @@ const getWonCellTypeFromPosition = (
     return null;
   }
   for (
-    let i = fromRowIndex, j = fromColumnIndex;
-    i < COUNT_TO_WIN && j < COUNT_TO_WIN;
-    i += rowDirection, j += columnDirection
+    let i = 0, rowIndex = fromRowIndex, columnIndex = fromColumnIndex;
+    i < COUNT_TO_WIN;
+    i++, rowIndex += rowDirection, columnIndex += columnDirection
   ) {
-    if (field[i][j] !== startCell) {
+    if (field[rowIndex][columnIndex] !== startCell) {
       break;
     }
     equalCellsCount++;
@@ -95,31 +101,20 @@ export const getWonCellType = (game: Game): FilledCellType | null => {
         if (!cell) {
           return false;
         }
-        const canBeRowWonPosition = rowIndex < (ROWS_COUNT - COUNT_TO_WIN);
-        const canBeColumnWonPosition = columnIndex < (COLUMNS_COUNT - COUNT_TO_WIN);
-        if (canBeRowWonPosition) {
-          wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 1, 0);
-          if (wonCellType) {
-            return true;
-          }
+        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 1, 0);
+        if (wonCellType) {
+          return true;
         }
-        if (canBeColumnWonPosition) {
-          wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 0, 1);
-          if (wonCellType) {
-            return true;
-          }
+        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 0, 1);
+        if (wonCellType) {
+          return true;
         }
-        if (canBeRowWonPosition && canBeColumnWonPosition) {
-          wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 1, 1);
-          if (wonCellType) {
-            return true;
-          }
-          wonCellType = getWonCellTypeFromPosition(game.field, rowIndex + COUNT_TO_WIN, columnIndex, -1, 1);
-          if (wonCellType) {
-            return true;
-          }
+        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 0, 1);
+        if (wonCellType) {
+          return true;
         }
-        return false;
+        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex + COUNT_TO_WIN, columnIndex, -1, 1);
+        return !!wonCellType;
       }
     )
   );

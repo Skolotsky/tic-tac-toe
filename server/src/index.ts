@@ -2,12 +2,12 @@ import 'module-alias/register';
 import * as express from 'express';
 import * as http from 'http';
 import { WebSocketService } from './services/WebSocketService';
-import { GameListService } from './services/GameListService';
+import { GameListSyncService } from './services/GameListSyncService';
 import { gamesStore } from './stores/GamesStore';
-import { GamesService } from './services/GamesService';
-import { PlayersService } from './services/PlayersService';
+import { GamesSyncService } from './services/GamesSyncService';
+import { PlayersSyncService } from './services/PlayersSyncService';
 import { playersStore } from './stores/PlayersStore';
-import { GameInfosService } from './services/GameInfosService';
+import { GameInfosSyncService } from './services/GameInfosSyncService';
 import { GameGUID, PlayerGUID } from '@common/models';
 import { action } from 'mobx';
 import { fillFieldCell } from '@common/lib/rules';
@@ -22,10 +22,10 @@ const server = http.createServer(app);
 
 //initialize the WebSocket server instance
 const webSocketService = new WebSocketService(server);
-const gameListService = new GameListService(gamesStore, webSocketService);
-const gameInfosService = new GameInfosService(gamesStore, webSocketService);
-const gamesService = new GamesService(gamesStore, webSocketService);
-const playersService = new PlayersService(playersStore, webSocketService);
+const gameListService = new GameListSyncService(gamesStore, webSocketService);
+const gameInfosService = new GameInfosSyncService(gamesStore, webSocketService);
+const gamesService = new GamesSyncService(gamesStore, webSocketService);
+const playersService = new PlayersSyncService(playersStore, webSocketService);
 
 //start our server
 server.listen(process.env.PORT || 8999, () => {

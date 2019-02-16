@@ -11,7 +11,7 @@ enum ReceivedWebSocketMessageType {
   Entity = 'GAME_LIST'
 }
 
-export class GameListService {
+export class GameListSyncService {
   constructor(
     private store: GameListStore,
     private webSocketService: WebSocketService
@@ -40,4 +40,4 @@ export class GameListService {
   };
 }
 
-export const gameListService = new GameListService(gameListStore, webSocketService);
+export const gameListSyncService = new GameListSyncService(gameListStore, webSocketService);

@@ -11,7 +11,7 @@ enum SendWebSocketMessageType {
   Entity = 'GAME_LIST'
 }
 
-export class GameListService {
+export class GameListSyncService {
   private disposers = new Map<ConnectionId, IReactionDisposer>();
 
   constructor(

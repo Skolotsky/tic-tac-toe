@@ -12,7 +12,7 @@ class DateView extends Component<DateViewProps> {
     const { date } = this.props;
     return (
       <div className={styles.DateView}>
-        {date.toLocaleDateString()}
+        {date.toLocaleTimeString()} {date.toLocaleDateString()}
       </div>
     );
   }
