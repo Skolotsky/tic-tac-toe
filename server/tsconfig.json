@@ -7,8 +7,16 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "@common/*": ["../client/src/common/*", "./src/common/*"]
+    }
   },
+  "include": [
+    "../client/src/common/**/*",
+    "./src/**/*"
+  ],
   "exclude": [
     "dist",
     "node_modules"

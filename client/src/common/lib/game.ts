@@ -1,7 +1,7 @@
-import { Game, Player, PlayerGUID } from '../common/models';
-import { PlayersStore } from '../stores/PlayersStore';
+import { Game, Player, PlayerGUID } from '../models';
+import { EntitiesProvider } from '../store';
 
-export const denormalizeGame = (game: Game<PlayerGUID>, playersStore: PlayersStore): Game<Player> | null => {
+export const denormalizeGame = (game: Game<PlayerGUID>, playersStore: EntitiesProvider<Player>): Game<Player> | null => {
   let lastAction = null;
   if (game.lastAction) {
     const lastActionPlayer = playersStore.get(game.lastAction.player);

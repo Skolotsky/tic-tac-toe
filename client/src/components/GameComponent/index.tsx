@@ -3,12 +3,10 @@ import { Game, GameGUID, Player, PlayerGUID } from '../../common/models';
 import { observer } from 'mobx-react';
 import { action, autorun, computed, IReactionDisposer } from 'mobx';
 import GameView from '../../views/GameView';
-import { fillFieldCell } from '../../common/rules';
-import { denormalizeGame } from '../../lib/game';
+import { denormalizeGame } from '../../common/lib/game';
 import { playersStore } from '../../stores/PlayersStore';
 import { gamesStore } from '../../stores/GamesStore';
 import { gamesService } from '../../services/GamesService';
-import { gameInfosService } from '../../services/GameInfosService';
 import { playersService } from '../../services/PlayersService';
 
 interface GameComponentProps {

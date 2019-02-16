@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import * as express from 'express';
 import * as http from 'http';
 import { WebSocketService } from './services/WebSocketService';
@@ -7,9 +8,9 @@ import { GamesService } from './services/GamesService';
 import { PlayersService } from './services/PlayersService';
 import { playersStore } from './stores/PlayersStore';
 import { GameInfosService } from './services/GameInfosService';
-import { GameGUID, PlayerGUID } from './common/models';
+import { GameGUID, PlayerGUID } from '@common/models';
 import { action } from 'mobx';
-import { fillFieldCell } from './common/rules';
+import { fillFieldCell } from '@common/lib/rules';
 const uuidv1 = require('uuid/v1');
 
 const app = express();

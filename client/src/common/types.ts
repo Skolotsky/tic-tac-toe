@@ -10,3 +10,7 @@ export type Tuple<T, L extends number> = L extends 10 ? [T, T, T, T, T, T, T, T,
 export type HexColorString = Nominal<'HexColorString', string>;
 
 export type URLString = Nominal<'URLString', string>;
+
+export interface Entity<ID> {
+  id: ID
+}

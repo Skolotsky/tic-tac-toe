@@ -1,4 +1,4 @@
-import { FilledCellType, Game, PlayerGUID } from './models';
+import { FilledCellType, Game, PlayerGUID } from '../models';
 
 const getAvailableCellType = (
   player: PlayerGUID,
@@ -35,4 +35,3 @@ export const fillFieldCell = (player: PlayerGUID, game: Game<PlayerGUID>, rowInd
     game.field[rowIndex][columnIndex] = cellType;
   }
 };
-

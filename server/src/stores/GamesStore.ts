@@ -1,4 +1,4 @@
-import { Game, GameGUID, PlayerGUID } from '../common/models';
+import { Game, GameGUID, PlayerGUID } from '@common/models';
 import { game } from '../mocks';
 import { Store } from './Store';
 

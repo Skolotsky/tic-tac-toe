@@ -1,6 +1,6 @@
 import { GamesStore } from '../../stores/GamesStore';
 import { WebSocketService } from '../WebSocketService';
-import { Game, GameGUID } from '../../common/models';
+import { Game, GameGUID } from '@common/models';
 import { StoreService } from '../StoreService';
 
 enum ReceivedWebSocketMessageType {

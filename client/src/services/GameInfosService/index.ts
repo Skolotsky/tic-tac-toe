@@ -2,7 +2,7 @@ import { webSocketService, WebSocketService } from '../WebSocketService';
 import { GameGUID, GameInfo } from '../../common/models';
 import { StoreService } from '../StoreService';
 import { gameInfosStore, GameInfosStore } from '../../stores/GameInfosStore';
-import { deserializeGameInfo } from '../../lib/gameInfo';
+import { deserializeGameInfo } from '../../common/lib/gameInfo';
 
 enum SendWebSocketMessageType {
   Subscribe = 'SUBSCRIBE_GAME_INFO',

@@ -1,5 +1,5 @@
-import { GameInfo } from '../common/models';
-import { Nominal } from '../common/types';
+import { GameInfo } from '../models';
+import { Nominal } from '../types';
 
 export type SerializedGameInfoString = Nominal<'SerializedGameString'>;
 

@@ -1,8 +1,8 @@
 import { webSocketService, WebSocketService } from '../WebSocketService';
-import { GameGUID, Game, PlayerGUID } from '../../common/models';
+import { GameGUID, Game } from '../../common/models';
 import { StoreService } from '../StoreService';
 import { gamesStore, GamesStore } from '../../stores/GamesStore';
-import { deserializeGame } from '../../lib/game';
+import { deserializeGame } from '../../common/lib/game';
 import { playerService } from '../PlayerService';
 
 enum SendWebSocketMessageType {

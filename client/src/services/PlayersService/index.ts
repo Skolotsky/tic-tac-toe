@@ -2,7 +2,7 @@ import { webSocketService, WebSocketService } from '../WebSocketService';
 import { PlayerGUID, Player } from '../../common/models';
 import { StoreService } from '../StoreService';
 import { playersStore, PlayersStore } from '../../stores/PlayersStore';
-import { deserializePlayer } from '../../lib/player';
+import { deserializePlayer } from '../../common/lib/player';
 
 enum SendWebSocketMessageType {
   Subscribe = 'SUBSCRIBE_PLAYER',

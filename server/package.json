@@ -2,11 +2,13 @@
   "name": "server",
   "version": "1.0.0",
   "scripts": {
-    "start": "ts-node ./src/index.ts"
+    "start": "tsc && node ./src/index.js",
+    "ts-start": "ts-node ./src/index.ts"
   },
   "dependencies": {
     "express": "^4.16.4",
     "mobx": "^5.9.0",
+    "module-alias": "^2.2.0",
     "uuid": "^3.3.2",
     "ws": "^6.1.3"
   },
@@ -15,5 +17,8 @@
     "@types/ws": "^6.0.1",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3"
+  },
+  "_moduleAliases": {
+    "@common": "../client/src/common/."
   }
 }
