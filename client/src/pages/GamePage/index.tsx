@@ -13,6 +13,7 @@ import { getWonCellType, isGameFinished } from '../../common/lib/rules';
 import FieldComponent from '../../components/FieldComponent';
 import GamePlayersComponent from '../../components/GamePlayersComponent';
 import CellTokenView from '../../views/CellTokenView';
+import { IdSubscription } from '../../lib/Subscriptions';
 
 interface GamePageProps {
   game: GameGUID;
@@ -22,6 +23,7 @@ interface GamePageProps {
 
 @observer
 class GamePage extends Component<GamePageProps> {
+  subscription?: IdSubscription<GameGUID>;
   disposers: IReactionDisposer[] = [];
 
   @computed
@@ -32,20 +34,19 @@ class GamePage extends Component<GamePageProps> {
 
   componentDidMount(): void {
     this.disposers.push(autorun(() => {
+      const oldSubscription = this.subscription;
       const { game } = this.props;
-      gamesSyncService.subscribe([game]);
-    }));
+      this.subscription = gamesSyncService.subscribe([game]);
+      if (oldSubscription) {
+        gamesSyncService.unsubscribe(oldSubscription);
+      }
+    }))
   }
 
   componentWillUnmount(): void {
-    const { game } = this.props;
-    gamesSyncService.unsubscribe([game]);
     this.disposers.forEach(disposer => disposer());
-  }
-
-  componentWillReceiveProps(nextProps: Readonly<GamePageProps>): void {
-    if (nextProps.game !== this.props.game) {
-      gamesSyncService.unsubscribe([this.props.game]);
+    if (this.subscription) {
+      gamesSyncService.unsubscribe(this.subscription)
     }
   }
 

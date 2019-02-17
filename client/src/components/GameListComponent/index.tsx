@@ -7,8 +7,8 @@ import { gameListSyncService } from '../../services/GameListSyncService';
 import { gameListStore } from '../../stores/GameListStore';
 import { gameInfosStore } from '../../stores/GameInfosStore';
 import { gameInfosSyncService } from '../../services/GameInfosSyncService';
-import { gamesSyncService } from '../../services/GamesSyncService';
 import { gamesService } from '../../services/GamesService';
+import { IdSubscription } from '../../lib/Subscriptions';
 
 interface GameListComponentProps {
   onSelectGame: (game: GameGUID) => void
@@ -16,29 +16,26 @@ interface GameListComponentProps {
 
 @observer
 export default class GameListComponent extends Component<GameListComponentProps> {
-  lastGameIdsSet: Set<GameGUID> = new Set();
-  disposer?: IReactionDisposer;
+  subscription?: IdSubscription<GameGUID>;
+  disposers: IReactionDisposer[] = [];
 
   componentDidMount(): void {
     gameListSyncService.subscribe();
-    this.disposer = autorun(() => {
-      const gameIdsSet = new Set(this.gameIds);
-      const gameIdsToSubscribe = this.gameIds.filter(id => !this.lastGameIdsSet.has(id));
-      const lastGameIds = Array.from(this.lastGameIdsSet.values());
-      const gameIdsToUnsubscribe = lastGameIds.filter(id => !gameIdsSet.has(id));
-      this.lastGameIdsSet = gameIdsSet;
-      gameInfosSyncService.subscribe(gameIdsToSubscribe);
-      gameInfosSyncService.unsubscribe(gameIdsToUnsubscribe);
-    })
+    this.disposers.push(autorun(() => {
+      const oldSubscription = this.subscription;
+      this.subscription = gameInfosSyncService.subscribe(this.gameIds);
+      if (oldSubscription) {
+        gameInfosSyncService.unsubscribe(oldSubscription);
+      }
+    }))
   }
 
   componentWillUnmount(): void {
+    this.disposers.forEach(disposer => disposer());
     gameListSyncService.unsubscribe();
-    if (this.disposer) {
-      this.disposer()
+    if (this.subscription) {
+      gameInfosSyncService.unsubscribe(this.subscription)
     }
-    const gameIdsToUnsubscribe = Array.from(this.lastGameIdsSet.values());
-    gameInfosSyncService.subscribe(gameIdsToUnsubscribe);
   }
 
   onSelectGame = (game: GameInfo) => {

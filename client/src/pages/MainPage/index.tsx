@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import { GameGUID, PlayerGUID } from '../../common/models';
 import { observer } from 'mobx-react';
 import LayoutView from '../../views/LayoutView';
-import { gamesSyncService } from '../../services/GamesSyncService';
 import GameListComponent from '../../components/GameListComponent';
 import PlayerComponent from '../../components/PlayerComponent';
 import commonStyles from '../../views/styles.module.css';
 import HeaderItemView from '../../views/HeaderItemView';
-import styles from '../GamePage/styles.module.css';
 import { gamesService } from '../../services/GamesService';
 
 interface MainPageProps {

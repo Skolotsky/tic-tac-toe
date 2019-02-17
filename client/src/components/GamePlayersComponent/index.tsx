@@ -6,6 +6,7 @@ import { gamesStore } from '../../stores/GamesStore';
 import { playersSyncService } from '../../services/PlayersSyncService';
 import PlayerListView from '../../views/PlayerListView';
 import { playersStore } from '../../stores/PlayersStore';
+import { IdSubscription } from '../../lib/Subscriptions';
 
 interface GamePlayersComponentProps {
   game: GameGUID;
@@ -13,7 +14,7 @@ interface GamePlayersComponentProps {
 
 @observer
 export default class GamePlayersComponent extends Component<GamePlayersComponentProps> {
-  lastPlayerIdsSet: Set<PlayerGUID> = new Set();
+  subscription?: IdSubscription<PlayerGUID>;
   disposers: IReactionDisposer[] = [];
 
   @computed
@@ -23,9 +24,15 @@ export default class GamePlayersComponent extends Component<GamePlayersComponent
   }
 
   @computed
-  private get players(): Player[] | null {
+  private get playerIds(): PlayerGUID[] {
     const { game } = this;
-    return game && playersStore.getList(game.players);
+    return game && game.players || [];
+  }
+
+  @computed
+  private get players(): Player[] | null {
+    const { playerIds } = this;
+    return playersStore.getList(playerIds);
   }
 
   @computed
@@ -43,22 +50,19 @@ export default class GamePlayersComponent extends Component<GamePlayersComponent
 
   componentDidMount(): void {
     this.disposers.push(autorun(() => {
-      const playerIdsSet = this.playerIdsSet;
-      const playerIds = Array.from(playerIdsSet.values());
-      const playerIdsToSubscribe = playerIds.filter(id => !this.lastPlayerIdsSet.has(id));
-      const lastGameIds = Array.from(this.lastPlayerIdsSet.values());
-      const playerIdsToUnsubscribe = lastGameIds.filter(id => !playerIdsSet.has(id));
-      this.lastPlayerIdsSet = playerIdsSet;
-      playersSyncService.subscribe(playerIdsToSubscribe);
-      playersSyncService.unsubscribe(playerIdsToUnsubscribe);
-    }));
+      const oldSubscription = this.subscription;
+      this.subscription = playersSyncService.subscribe(this.playerIds);
+      if (oldSubscription) {
+        playersSyncService.unsubscribe(oldSubscription);
+      }
+    }))
   }
 
   componentWillUnmount(): void {
-    const { lastPlayerIdsSet } = this;
-    const playerIds = Array.from(lastPlayerIdsSet.values());
-    playersSyncService.unsubscribe(playerIds);
     this.disposers.forEach(disposer => disposer());
+    if (this.subscription) {
+      playersSyncService.unsubscribe(this.subscription)
+    }
   }
 
   render() {

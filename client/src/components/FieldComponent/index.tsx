@@ -3,7 +3,6 @@ import { Game, GameGUID, PlayerGUID } from '../../common/models';
 import { observer } from 'mobx-react';
 import { action, computed } from 'mobx';
 import { gamesStore } from '../../stores/GamesStore';
-import { gamesSyncService } from '../../services/GamesSyncService';
 import { getAvailableCellType } from '../../common/lib/rules';
 import FieldView from '../../views/FieldView';
 import { gamesService } from '../../services/GamesService';
