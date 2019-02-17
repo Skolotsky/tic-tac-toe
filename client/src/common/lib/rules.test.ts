@@ -1,7 +1,8 @@
-import { COUNT_TO_WIN, fillFieldCell, getAvailableCellType, getWonCellType } from './rules';
+import { COUNT_TO_WIN, fillFieldCell, getAvailableCellType, getWonCellType, isGameFinished } from './rules';
 import { createGame } from './game';
 import { FilledCellType } from '../models';
 import { createPlayer } from './player';
+import { COLUMNS_COUNT, ROWS_COUNT } from '../constants/models';
 
 it('can be placed cross at start', () => {
   const game = createGame();
@@ -126,4 +127,23 @@ it('can win second diagonal', () => {
     game.field[i][j] = FilledCellType.Nought
   }
   expect(getWonCellType(game)).toBe(FilledCellType.Nought);
+});
+
+it('finished after all is filled', () => {
+  const game = createGame();
+  for (let i = 0; i < ROWS_COUNT; i++) {
+    for (let j = 0; j < COLUMNS_COUNT; j++) {
+      game.field[i][j] = FilledCellType.Nought
+    }
+  }
+  for (let i = 0; i < ROWS_COUNT / 2; i++) {
+    for (let j = i % 2; j < COLUMNS_COUNT; j +=2) {
+      game.field[i * 2][j] = FilledCellType.Cross;
+      game.field[i * 2 + 1][j] = FilledCellType.Cross;
+    }
+  }
+  expect(getWonCellType(game)).toBe(null);
+  expect(isGameFinished(game)).toBe(true);
+  game.field[0][0] = null;
+  expect(isGameFinished(game)).toBe(false);
 });
