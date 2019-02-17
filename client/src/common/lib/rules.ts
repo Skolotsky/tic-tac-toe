@@ -1,4 +1,4 @@
-import { Field, FilledCellType, Game, PlayerGUID } from '../models';
+import { Cell, Field, FilledCellType, Game, PlayerGUID } from '../models';
 import { COLUMNS_COUNT, ROWS_COUNT } from '../constants/models';
 
 export const getAvailableCellType = (
@@ -37,10 +37,12 @@ export const fillFieldCell = (player: PlayerGUID, game: Game<PlayerGUID>, rowInd
       date: new Date()
     };
     game.field[rowIndex][columnIndex] = cellType;
+    return true;
   }
+  return false;
 };
 
-const COUNT_TO_WIN = 5;
+export const COUNT_TO_WIN = 5;
 type Direction = -1 | 0 | 1;
 
 const inBounds = (value: number, min: number, max: number): boolean => (
@@ -50,13 +52,15 @@ const inBounds = (value: number, min: number, max: number): boolean => (
 const rowIndexInBounds = (index: number) => inBounds(index + 1, 1, ROWS_COUNT);
 const columnIndexInBounds = (index: number) => inBounds(index + 1, 1, COLUMNS_COUNT);
 
-const getWonCellTypeFromPosition = (
+const walkFromPosition = (
   field: Field,
   fromRowIndex: number,
   fromColumnIndex: number,
   rowDirection: Direction,
-  columnDirection: Direction
-): FilledCellType | null => {
+  columnDirection: Direction,
+  stepsCount: number,
+  stepHandler: (cell: Cell, rowIndex: number, columnIndex: number) => boolean
+) => {
   if (!rowDirection && !columnDirection) {
     return null;
   }
@@ -66,27 +70,56 @@ const getWonCellTypeFromPosition = (
   if (!columnIndexInBounds(fromColumnIndex)) {
     return null
   }
-  if (!rowIndexInBounds(fromRowIndex + COUNT_TO_WIN * rowDirection)) {
+  if (!rowIndexInBounds(fromRowIndex + (stepsCount - 1) * rowDirection)) {
     return null
   }
-  if (!columnIndexInBounds(fromColumnIndex + COUNT_TO_WIN * columnDirection)) {
+  if (!columnIndexInBounds(fromColumnIndex + (stepsCount - 1) * columnDirection)) {
     return null
   }
-  let equalCellsCount = 0;
+  for (
+    let i = 0, rowIndex = fromRowIndex, columnIndex = fromColumnIndex;
+    i < stepsCount;
+    i++, rowIndex += rowDirection, columnIndex += columnDirection
+  ) {
+    if (!stepHandler(field[rowIndex][columnIndex], rowIndex, columnIndex)) {
+      break;
+    }
+  }
+};
+
+const getWonCellTypeFromPosition = (
+  field: Field,
+  fromRowIndex: number,
+  fromColumnIndex: number,
+  rowDirection: Direction,
+  columnDirection: Direction
+): FilledCellType | null => {
+  if (!rowIndexInBounds(fromRowIndex)) {
+    return null
+  }
+  if (!columnIndexInBounds(fromColumnIndex)) {
+    return null
+  }
   const startCell = field[fromRowIndex][fromColumnIndex];
   if (!startCell) {
     return null;
   }
-  for (
-    let i = 0, rowIndex = fromRowIndex, columnIndex = fromColumnIndex;
-    i < COUNT_TO_WIN;
-    i++, rowIndex += rowDirection, columnIndex += columnDirection
-  ) {
-    if (field[rowIndex][columnIndex] !== startCell) {
-      break;
+  let equalCellsCount = 0;
+  walkFromPosition(
+    field,
+    fromRowIndex,
+    fromColumnIndex,
+    rowDirection,
+    columnDirection,
+    COUNT_TO_WIN,
+    (cell) => {
+      if (cell !== startCell) {
+        return false;
+      }
+      equalCellsCount++;
+      return true;
     }
-    equalCellsCount++;
-  }
+  );
   if (equalCellsCount === COUNT_TO_WIN) {
     return startCell;
   }
@@ -98,22 +131,11 @@ export const getWonCellType = (game: Game): FilledCellType | null => {
   game.field.some(
     (row, rowIndex) => row.some(
       (cell, columnIndex) => {
-        if (!cell) {
-          return false;
-        }
-        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 1, 0);
-        if (wonCellType) {
-          return true;
-        }
-        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 0, 1);
-        if (wonCellType) {
-          return true;
-        }
-        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 1, 1);
-        if (wonCellType) {
-          return true;
-        }
-        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex + COUNT_TO_WIN, columnIndex, -1, 1);
+        wonCellType =
+          getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 1, 0) ||
+          getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 0, 1) ||
+          getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 1, 1) ||
+          getWonCellTypeFromPosition(game.field, rowIndex + COUNT_TO_WIN - 1, columnIndex, -1, 1);
         return !!wonCellType;
       }
     )

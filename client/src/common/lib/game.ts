@@ -1,6 +1,7 @@
-import { Game, GameGUID, Player, PlayerGUID } from '../models';
+import { Field, Game, GameGUID, Player, PlayerGUID } from '../models';
 import { EntitiesProvider } from '../store';
-import { emptyField } from '../constants/models';
+import { COLUMNS_COUNT, ROWS_COUNT } from '../constants/models';
+import { tuple } from '../tuple';
 const uuidv1 = require('uuid/v1');
 
 export const denormalizeGame = (game: Game<PlayerGUID>, playersStore: EntitiesProvider<Player>): Game<Player> | null => {
@@ -44,6 +45,6 @@ export const createGame = (): Game<PlayerGUID> => {
     createDate: new Date(),
     players: [],
     lastAction: null,
-    field: emptyField
+    field: tuple(ROWS_COUNT, () => tuple(COLUMNS_COUNT, () => null)) as Field
   };
 };
