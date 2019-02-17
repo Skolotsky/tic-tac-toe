@@ -5,6 +5,7 @@ import { PlayersStore } from '../../stores/PlayersStore';
 import { action } from 'mobx';
 import { createGame } from '@common/lib/game';
 import { fillFieldCell, joinGame } from '@common/lib/rules';
+import * as uuidv1 from 'uuid/v1';
 
 export class GamesService {
   constructor(
@@ -39,7 +40,7 @@ export class GamesService {
 
   @action
   private onNewGame = (req: express.Request, res: express.Response) =>{
-    const game = createGame();
+    const game = createGame(uuidv1() as GameGUID);
     this.gamesStore.set(game.id, game);
     res.json({ id: game.id });
   };

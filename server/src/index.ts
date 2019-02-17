@@ -8,8 +8,6 @@ import { GamesSyncService } from './services/GamesSyncService';
 import { PlayersSyncService } from './services/PlayersSyncService';
 import { playersStore } from './stores/PlayersStore';
 import { GameInfosSyncService } from './services/GameInfosSyncService';
-import { PlayerGUID } from '@common/models';
-import { createPlayer } from '@common/lib/player';
 import { GamesService } from './services/GamesService';
 import { PlayersService } from './services/PlayersService';
 
@@ -36,15 +34,4 @@ server.listen(process.env.PORT || 8999, () => {
   } else if (address) {
     console.log(`Server started on port ${address.port}`);
   }
-});
-
-app.post('/api/player', function (req: express.Request, res: express.Response) {
-  let id = req.body.requestedId as PlayerGUID | null;
-  if (!id || !playersStore.get(id)) {
-    const player = createPlayer();
-    playersStore.set(player.id, player);
-    id = player.id;
-  }
-  console.log('player joined', id);
-  res.json({ id });
 });

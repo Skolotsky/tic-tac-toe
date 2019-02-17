@@ -1,5 +1,4 @@
 import { Player, PlayerGUID } from '../models';
-const uuidv1 = require('uuid/v1');
 
 export const serializePlayer = (player: Player): string => {
   return JSON.stringify(player);
@@ -12,9 +11,9 @@ export const deserializePlayer = (string: string): Player => {
 
 let playerNameCounter = 1;
 
-export const createPlayer = (): Player => {
+export const createPlayer = (id: PlayerGUID): Player => {
   return {
-    id: uuidv1() as PlayerGUID,
+    id,
     name: `Player ${playerNameCounter++}`
   };
 };

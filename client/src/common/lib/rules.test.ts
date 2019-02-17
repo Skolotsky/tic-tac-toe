@@ -1,40 +1,40 @@
 import { COUNT_TO_WIN, fillFieldCell, getAvailableCellType, getWonCellType, isGameFinished } from './rules';
 import { createGame } from './game';
-import { FilledCellType } from '../models';
+import { FilledCellType, GameGUID, PlayerGUID } from '../models';
 import { createPlayer } from './player';
 import { COLUMNS_COUNT, ROWS_COUNT } from '../constants/models';
 
 it('can be placed cross at start', () => {
-  const game = createGame();
-  const player1 = createPlayer();
+  const game = createGame('g' as GameGUID);
+  const player1 = createPlayer('1' as PlayerGUID);
   expect(getAvailableCellType(player1.id, game, 0, 0)).toBe(FilledCellType.Cross);
   expect(fillFieldCell(player1.id, game, 0, 0)).toBe(true);
   expect(game.field[0][0]).toBe(FilledCellType.Cross);
 });
 
 it('can be placed nought after cross', () => {
-  const game = createGame();
-  const player1 = createPlayer();
+  const game = createGame('g' as GameGUID);
+  const player1 = createPlayer('1' as PlayerGUID);
   fillFieldCell(player1.id, game, 0, 0);
-  const player2 = createPlayer();
+  const player2 = createPlayer('2' as PlayerGUID);
   expect(getAvailableCellType(player2.id, game, 0, 1)).toBe(FilledCellType.Nought);
   expect(fillFieldCell(player2.id, game, 0, 1)).toBe(true);
   expect(game.field[0][1]).toBe(FilledCellType.Nought);
 });
 
 it('can not be placed twice at the same cell', () => {
-  const game = createGame();
-  const player1 = createPlayer();
+  const game = createGame('g' as GameGUID);
+  const player1 = createPlayer('1' as PlayerGUID);
   fillFieldCell(player1.id, game, 0, 0);
-  const player2 = createPlayer();
+  const player2 = createPlayer('2' as PlayerGUID);
   expect(getAvailableCellType(player2.id, game, 0, 0)).toBe(null);
   expect(fillFieldCell(player2.id, game, 0, 0)).toBe(false);
   expect(game.field[0][0]).toBe(FilledCellType.Cross);
 });
 
 it('can not turn twice the same player', () => {
-  const game = createGame();
-  const player1 = createPlayer();
+  const game = createGame('g' as GameGUID);
+  const player1 = createPlayer('1' as PlayerGUID);
   fillFieldCell(player1.id, game, 0, 0);
   expect(getAvailableCellType(player1.id, game, 0, 1)).toBe(null);
   expect(fillFieldCell(player1.id, game, 0, 1)).toBe(false);
@@ -42,19 +42,19 @@ it('can not turn twice the same player', () => {
 });
 
 it('not win at start', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   expect(getWonCellType(game)).toBe(null);
 });
 
 it('not win if not win', () => {
-  const game = createGame();
-  const player1 = createPlayer();
+  const game = createGame('g' as GameGUID);
+  const player1 = createPlayer('1' as PlayerGUID);
   fillFieldCell(player1.id, game, 0, 0);
   expect(getWonCellType(game)).toBe(null);
 });
 
 it('can not win vertical with different tokens', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   for (let i = 0; i < COUNT_TO_WIN; i++) {
     game.field[i][0] = FilledCellType.Cross
   }
@@ -65,7 +65,7 @@ it('can not win vertical with different tokens', () => {
 });
 
 it('can win vertical', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   for (let i = 0; i < COUNT_TO_WIN; i++) {
     game.field[i][0] = FilledCellType.Cross
   }
@@ -73,7 +73,7 @@ it('can win vertical', () => {
 });
 
 it('can not win horizontal with different tokens', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   for (let i = 0; i < COUNT_TO_WIN; i++) {
     game.field[0][i] = FilledCellType.Cross
   }
@@ -84,7 +84,7 @@ it('can not win horizontal with different tokens', () => {
 });
 
 it('can win horizontal', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   for (let i = 0; i < COUNT_TO_WIN; i++) {
     game.field[0][i] = FilledCellType.Nought
   }
@@ -92,7 +92,7 @@ it('can win horizontal', () => {
 });
 
 it('can not win diagonal with different tokens', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   for (let i = 0, j = 0; i < COUNT_TO_WIN; i++, j++) {
     game.field[i][j] = FilledCellType.Cross
   }
@@ -103,7 +103,7 @@ it('can not win diagonal with different tokens', () => {
 });
 
 it('can win main diagonal', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   for (let i = 0, j = 0; i < COUNT_TO_WIN; i++, j++) {
     game.field[i][j] = FilledCellType.Cross
   }
@@ -111,7 +111,7 @@ it('can win main diagonal', () => {
 });
 
 it('can not win second diagonal with different tokens', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   for (let i = COUNT_TO_WIN - 1, j = 0; i >= 0; i--, j++) {
     game.field[i][j] = FilledCellType.Nought
   }
@@ -122,7 +122,7 @@ it('can not win second diagonal with different tokens', () => {
 });
 
 it('can win second diagonal', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   for (let i = COUNT_TO_WIN - 1, j = 0; i >= 0; i--, j++) {
     game.field[i][j] = FilledCellType.Nought
   }
@@ -130,7 +130,7 @@ it('can win second diagonal', () => {
 });
 
 it('finished after all is filled', () => {
-  const game = createGame();
+  const game = createGame('g' as GameGUID);
   for (let i = 0; i < ROWS_COUNT; i++) {
     for (let j = 0; j < COLUMNS_COUNT; j++) {
       game.field[i][j] = FilledCellType.Nought

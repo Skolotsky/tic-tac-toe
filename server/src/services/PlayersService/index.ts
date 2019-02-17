@@ -2,6 +2,7 @@ import * as express from 'express';
 import { PlayerGUID } from '@common/models';
 import { PlayersStore } from '../../stores/PlayersStore';
 import { createPlayer } from '@common/lib/player';
+import * as uuidv1 from 'uuid/v1';
 
 export class PlayersService {
   constructor(
@@ -14,7 +15,7 @@ export class PlayersService {
   private onPlayerJoined = (req: express.Request, res: express.Response) => {
     let id = req.body.requestedId as PlayerGUID | null;
     if (!id || !this.playersStore.get(id)) {
-      const player = createPlayer();
+      const player = createPlayer(uuidv1() as PlayerGUID);
       this.playersStore.set(player.id, player);
       id = player.id;
     }
