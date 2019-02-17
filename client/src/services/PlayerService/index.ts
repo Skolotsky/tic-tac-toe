@@ -11,7 +11,11 @@ export class PlayerService {
     private webSocketService: WebSocketService,
     private playersSyncService: PlayersSyncService
   ) {
-    this.fetchId();
+    autorun(() => {
+        if (this.webSocketService.isConnected) {
+        this.fetchId();
+      }
+    });
     autorun(() => {
       if (this.webSocketService.isConnected && this.id) {
         this.playersSyncService.subscribe([this.id]);

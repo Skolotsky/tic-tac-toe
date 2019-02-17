@@ -27,9 +27,10 @@ export class WebSocketService {
   private handlers = new Map<WebSocketMessageType, Set<Handler>>();
 
   constructor(private url: URLString) {
+    this.connect();
     when(
       () => this.state === WebSocketServiceState.DISCONNECTED,
-      this.connect
+      () => window.location.reload()
     );
     this.on(WebSocketMessageTypes.Ping, this.pong);
   }
