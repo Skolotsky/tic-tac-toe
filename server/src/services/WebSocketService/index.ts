@@ -2,6 +2,7 @@ import * as WebSocket from 'ws';
 import * as http from 'http';
 import { EventEmitter } from 'events';
 import { WebSocketMessageType } from '../../../../client/src/services/WebSocketService';
+import { WebSocketMessageTypes } from '@common/constants/WebSocketMessageTypes';
 
 export type WebSocketMessageType = string;
 
@@ -13,10 +14,6 @@ export interface WebSocketMessage {
 type Handler = (message: WebSocketMessage, connectionId: ConnectionId) => void
 export type ConnectionId = number;
 
-export enum WebSocketMessageTypes {
-  Ping = 'PING',
-  Pong = 'PONG'
-}
 export const PING_INTERVAL = 2000;
 export const PONG_AWAIT = 1000;
 

@@ -1,6 +1,6 @@
 import { URLString } from '../../common/types';
 import { action, computed, observable, when } from 'mobx';
-import { PING_INTERVAL } from '../../../../server/src/services/WebSocketService';
+import { WebSocketMessageTypes } from '../../common/constants/WebSocketMessageTypes';
 
 enum WebSocketServiceState {
   CONNECTING = 'CONNECTING',
@@ -9,10 +9,6 @@ enum WebSocketServiceState {
 }
 
 export type WebSocketMessageType = string;
-export enum WebSocketMessageTypes {
-  Ping = 'PING',
-  Pong = 'PONG'
-}
 
 export interface WebSocketMessage {
   type: WebSocketMessageType,

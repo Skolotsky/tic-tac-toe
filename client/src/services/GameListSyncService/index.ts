@@ -1,15 +1,7 @@
 import { WebSocketMessage, webSocketService, WebSocketService } from '../WebSocketService';
 import { gameListStore, GameListStore } from '../../stores/GameListStore';
 import { GameGUID } from '../../common/models';
-
-enum SendWebSocketMessageType {
-  Subscribe = 'SUBSCRIBE_GAME_LIST',
-  Unsubscribe = 'UNSUBSCRIBE_GAME_LIST'
-}
-
-enum ReceivedWebSocketMessageType {
-  Entity = 'GAME_LIST'
-}
+import { WebSocketMessageTypes } from '../../common/constants/WebSocketMessageTypes';
 
 export class GameListSyncService {
   constructor(
@@ -17,20 +9,20 @@ export class GameListSyncService {
     private webSocketService: WebSocketService
   ) {
     webSocketService.on(
-      ReceivedWebSocketMessageType.Entity,
+      WebSocketMessageTypes.GameList,
       this.onReceive
     );
   }
 
   subscribe() {
     this.webSocketService.send({
-      type: SendWebSocketMessageType.Subscribe
+      type: WebSocketMessageTypes.SubscribeGameList
     })
   }
 
   unsubscribe() {
     this.webSocketService.send({
-      type: SendWebSocketMessageType.Unsubscribe
+      type: WebSocketMessageTypes.UnsubscribeGameList
     })
   }
 

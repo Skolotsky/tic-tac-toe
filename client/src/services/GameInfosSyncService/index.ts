@@ -3,15 +3,7 @@ import { GameInfo } from '../../common/models';
 import { SyncService } from '../SyncService';
 import { gameInfosStore, GameInfosStore } from '../../stores/GameInfosStore';
 import { deserializeGameInfo } from '../../common/lib/gameInfo';
-
-enum SendWebSocketMessageType {
-  Subscribe = 'SUBSCRIBE_GAME_INFO',
-  Unsubscribe = 'UNSUBSCRIBE_GAME_INFO'
-}
-
-enum ReceivedWebSocketMessageType {
-  Entity = 'GAME_INFO'
-}
+import { WebSocketMessageTypes } from '../../common/constants/WebSocketMessageTypes';
 
 export class GameInfosSyncService extends SyncService<GameInfo> {
   constructor(
@@ -22,9 +14,9 @@ export class GameInfosSyncService extends SyncService<GameInfo> {
       store,
       webSocketService,
       deserializeGameInfo,
-      SendWebSocketMessageType.Subscribe,
-      SendWebSocketMessageType.Unsubscribe,
-      ReceivedWebSocketMessageType.Entity
+      WebSocketMessageTypes.SubscribeGameInfo,
+      WebSocketMessageTypes.UnsubscribeGameInfo,
+      WebSocketMessageTypes.GameInfo
     );
   }
 }

@@ -4,15 +4,7 @@ import { SyncService } from '../SyncService';
 import { gamesStore, GamesStore } from '../../stores/GamesStore';
 import { deserializeGame } from '../../common/lib/game';
 import { playerService } from '../PlayerService';
-
-enum SendWebSocketMessageType {
-  Subscribe = 'SUBSCRIBE_GAME',
-  Unsubscribe = 'UNSUBSCRIBE_GAME'
-}
-
-enum ReceivedWebSocketMessageType {
-  Entity = 'GAME'
-}
+import { WebSocketMessageTypes } from '../../common/constants/WebSocketMessageTypes';
 
 export class GamesSyncService extends SyncService<Game> {
   constructor(
@@ -23,9 +15,9 @@ export class GamesSyncService extends SyncService<Game> {
       store,
       webSocketService,
       deserializeGame,
-      SendWebSocketMessageType.Subscribe,
-      SendWebSocketMessageType.Unsubscribe,
-      ReceivedWebSocketMessageType.Entity
+      WebSocketMessageTypes.SubscribeGame,
+      WebSocketMessageTypes.UnsubscribeGame,
+      WebSocketMessageTypes.Game
     );
   }
 

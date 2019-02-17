@@ -1,15 +1,7 @@
 import { GamesStore } from '../../stores/GamesStore';
 import { ConnectionId, WebSocketMessage, WebSocketService } from '../WebSocketService';
 import { autorun, IReactionDisposer } from 'mobx';
-
-enum ReceivedWebSocketMessageType {
-  Subscribe = 'SUBSCRIBE_GAME_LIST',
-  Unsubscribe = 'UNSUBSCRIBE_GAME_LIST'
-}
-
-enum SendWebSocketMessageType {
-  Entity = 'GAME_LIST'
-}
+import { WebSocketMessageTypes } from '@common/constants/WebSocketMessageTypes';
 
 export class GameListSyncService {
   private disposers = new Map<ConnectionId, IReactionDisposer>();
@@ -19,11 +11,11 @@ export class GameListSyncService {
     private webSocketService: WebSocketService
   ) {
     webSocketService.on(
-      ReceivedWebSocketMessageType.Subscribe,
+      WebSocketMessageTypes.SubscribeGameList,
       this.onSubscribe
     );
     webSocketService.on(
-      ReceivedWebSocketMessageType.Unsubscribe,
+      WebSocketMessageTypes.UnsubscribeGameList,
       this.onUnsubscribe
     );
     webSocketService.on(
@@ -50,7 +42,7 @@ export class GameListSyncService {
   private send(connectionIds: ConnectionId[]) {
     this.webSocketService.send(
       {
-        type: SendWebSocketMessageType.Entity,
+        type: WebSocketMessageTypes.GameList,
         data: JSON.stringify(this.store.allIds)
       },
       connectionIds

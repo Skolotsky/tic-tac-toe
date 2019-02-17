@@ -1,5 +1,5 @@
-import { tuple } from './tuple';
-import { Field } from './models';
+import { tuple } from '../tuple';
+import { Field } from '../models';
 
 export const ROWS_COUNT = 10;
 export const COLUMNS_COUNT = 10;

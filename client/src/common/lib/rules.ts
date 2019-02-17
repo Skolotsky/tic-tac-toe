@@ -1,5 +1,5 @@
 import { Field, FilledCellType, Game, PlayerGUID } from '../models';
-import { COLUMNS_COUNT, ROWS_COUNT } from '../models-constants';
+import { COLUMNS_COUNT, ROWS_COUNT } from '../constants/models';
 
 export const getAvailableCellType = (
   player: PlayerGUID,
@@ -40,7 +40,7 @@ export const fillFieldCell = (player: PlayerGUID, game: Game<PlayerGUID>, rowInd
   }
 };
 
-const COUNT_TO_WIN = 3;
+const COUNT_TO_WIN = 5;
 type Direction = -1 | 0 | 1;
 
 const inBounds = (value: number, min: number, max: number): boolean => (
@@ -109,7 +109,7 @@ export const getWonCellType = (game: Game): FilledCellType | null => {
         if (wonCellType) {
           return true;
         }
-        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 0, 1);
+        wonCellType = getWonCellTypeFromPosition(game.field, rowIndex, columnIndex, 1, 1);
         if (wonCellType) {
           return true;
         }

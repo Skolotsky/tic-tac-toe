@@ -2,15 +2,8 @@ import { GamesStore } from '../../stores/GamesStore';
 import { WebSocketService } from '../WebSocketService';
 import { Game } from '@common/models';
 import { SyncService } from '../SyncService';
+import { WebSocketMessageTypes } from '@common/constants/WebSocketMessageTypes';
 
-enum ReceivedWebSocketMessageType {
-  Subscribe = 'SUBSCRIBE_GAME',
-  Unsubscribe = 'UNSUBSCRIBE_GAME'
-}
-
-enum SendWebSocketMessageType {
-  Entity = 'GAME'
-}
 
 export class GamesSyncService extends SyncService<Game> {
   constructor(
@@ -20,8 +13,8 @@ export class GamesSyncService extends SyncService<Game> {
     super(
       store,
       webSocketService,
-      SendWebSocketMessageType.Entity,
-      [ReceivedWebSocketMessageType.Subscribe, ReceivedWebSocketMessageType.Unsubscribe]
+      WebSocketMessageTypes.Game,
+      [WebSocketMessageTypes.SubscribeGame, WebSocketMessageTypes.UnsubscribeGame]
     );
   }
 }

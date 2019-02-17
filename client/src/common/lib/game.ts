@@ -1,6 +1,6 @@
 import { Game, GameGUID, Player, PlayerGUID } from '../models';
 import { EntitiesProvider } from '../store';
-import { emptyField } from '../models-constants';
+import { emptyField } from '../constants/models';
 const uuidv1 = require('uuid/v1');
 
 export const denormalizeGame = (game: Game<PlayerGUID>, playersStore: EntitiesProvider<Player>): Game<Player> | null => {
