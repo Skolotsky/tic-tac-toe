@@ -33,7 +33,7 @@ server.listen(process.env.PORT || 8999, () => {
   const address = server.address();
   if (typeof address === 'string') {
     console.log(`Server started on ${address}`);
-  } else {
+  } else if (address) {
     console.log(`Server started on port ${address.port}`);
   }
 });
