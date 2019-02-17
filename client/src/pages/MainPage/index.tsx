@@ -8,6 +8,7 @@ import PlayerComponent from '../../components/PlayerComponent';
 import commonStyles from '../../views/styles.module.css';
 import HeaderItemView from '../../views/HeaderItemView';
 import styles from '../GamePage/styles.module.css';
+import { gamesService } from '../../services/GamesService';
 
 interface MainPageProps {
   self: PlayerGUID;
@@ -18,7 +19,7 @@ interface MainPageProps {
 class MainPage extends Component<MainPageProps> {
   onSelectGame = async (id: GameGUID) => {
     const { onJoinedGame } = this.props;
-    const isJoined = await gamesSyncService.joinGame(id);
+    const isJoined = await gamesService.joinGame(id);
     if (isJoined) {
       return onJoinedGame(id)
     }

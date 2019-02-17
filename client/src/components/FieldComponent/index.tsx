@@ -6,6 +6,7 @@ import { gamesStore } from '../../stores/GamesStore';
 import { gamesSyncService } from '../../services/GamesSyncService';
 import { getAvailableCellType } from '../../common/lib/rules';
 import FieldView from '../../views/FieldView';
+import { gamesService } from '../../services/GamesService';
 
 interface FieldComponentProps {
   game: GameGUID;
@@ -25,7 +26,7 @@ export default class FieldComponent extends Component<FieldComponentProps> {
     const { player } = this.props;
     const { game } = this;
     if (game && getAvailableCellType(player, game, rowIndex, columnIndex)) {
-      gamesSyncService.fillFieldCell(game.id, rowIndex, columnIndex);
+      gamesService.fillFieldCell(game.id, rowIndex, columnIndex);
     }
   };
 

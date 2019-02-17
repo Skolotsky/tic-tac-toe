@@ -1,27 +1,30 @@
 import { PlayerGUID } from '../../common/models';
 import { action, autorun, observable } from 'mobx';
-import { playersSyncService } from '../PlayersSyncService';
-import { webSocketService } from '../WebSocketService';
+import { PlayersSyncService, playersSyncService } from '../PlayersSyncService';
+import { WebSocketService, webSocketService } from '../WebSocketService';
 
 export class PlayerService {
   @observable
   private id: PlayerGUID | null = null;
 
-  constructor() {
-    const id = localStorage.getItem('playerId') as PlayerGUID | null;
-    this.fetchId(id);
+  constructor(
+    private webSocketService: WebSocketService,
+    private playersSyncService: PlayersSyncService
+  ) {
+    this.fetchId();
     autorun(() => {
-      if (webSocketService.isConnected && this.id) {
-        playersSyncService.subscribe([this.id]);
+      if (this.webSocketService.isConnected && this.id) {
+        this.playersSyncService.subscribe([this.id]);
       }
-    })
+    });
   }
 
   self(): PlayerGUID | null {
     return this.id;
   }
 
-  private async fetchId(lastId: PlayerGUID | null) {
+  private async fetchId() {
+    const lastId = localStorage.getItem('playerId') as PlayerGUID | null;
     const response = await fetch('/api/player', {
       method: 'POST',
       headers: {
@@ -46,4 +49,4 @@ export class PlayerService {
   }
 }
 
-export const playerService = new PlayerService();
+export const playerService = new PlayerService(webSocketService, playersSyncService);

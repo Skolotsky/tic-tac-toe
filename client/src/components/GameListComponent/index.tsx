@@ -8,6 +8,7 @@ import { gameListStore } from '../../stores/GameListStore';
 import { gameInfosStore } from '../../stores/GameInfosStore';
 import { gameInfosSyncService } from '../../services/GameInfosSyncService';
 import { gamesSyncService } from '../../services/GamesSyncService';
+import { gamesService } from '../../services/GamesService';
 
 interface GameListComponentProps {
   onSelectGame: (game: GameGUID) => void
@@ -47,7 +48,7 @@ export default class GameListComponent extends Component<GameListComponentProps>
 
   onNewGame = async () => {
     const { onSelectGame } = this.props;
-    const id = await gamesSyncService.newGame();
+    const id = await gamesService.newGame();
     if (id) {
       onSelectGame(id);
     }

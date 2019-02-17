@@ -7,7 +7,7 @@ export const getAvailableCellType = (
   rowIndex: number,
   columnIndex: number
 ): FilledCellType | null => {
-  if (getWonCellType(game)) {
+  if (isGameFinished(game)) {
     return null;
   }
   if (!game.lastAction) {
@@ -119,6 +119,14 @@ export const getWonCellType = (game: Game): FilledCellType | null => {
     )
   );
   return wonCellType;
+};
+
+export const isGameFinished = (game: Game): boolean => {
+  let wonCellType: FilledCellType | null = getWonCellType(game);
+  if (wonCellType) {
+    return !!wonCellType;
+  }
+  return game.field.every(row => row.every(cell => !!cell));
 };
 
 export const joinGame = (game: Game, player: PlayerGUID) => {

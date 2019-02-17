@@ -6,10 +6,10 @@ import { observer } from 'mobx-react';
 import LayoutView from '../../views/LayoutView';
 import PlayerComponent from '../../components/PlayerComponent';
 import HeaderItemView from '../../views/HeaderItemView';
-import { action, autorun, computed, IReactionDisposer } from 'mobx';
+import { autorun, computed, IReactionDisposer } from 'mobx';
 import { gamesSyncService } from '../../services/GamesSyncService';
 import { gamesStore } from '../../stores/GamesStore';
-import { getAvailableCellType, getWonCellType } from '../../common/lib/rules';
+import { getWonCellType, isGameFinished } from '../../common/lib/rules';
 import FieldComponent from '../../components/FieldComponent';
 import GamePlayersComponent from '../../components/GamePlayersComponent';
 import CellTokenView from '../../views/CellTokenView';
@@ -49,15 +49,6 @@ class GamePage extends Component<GamePageProps> {
     }
   }
 
-  @action
-  private onSelectCell = (rowIndex: number, columnIndex: number) => {
-    const { self } = this.props;
-    const { game } = this;
-    if (game && getAvailableCellType(self, game, rowIndex, columnIndex)) {
-      gamesSyncService.fillFieldCell(game.id, rowIndex, columnIndex);
-    }
-  };
-
   render() {
     const { self, onBack } = this.props;
     const { game } = this;
@@ -65,6 +56,7 @@ class GamePage extends Component<GamePageProps> {
       return 'Loading...';
     }
     const wonCellType = getWonCellType(game);
+    const finished = wonCellType || isGameFinished(game);
     return (
       <LayoutView>
         <LayoutView.HeaderLeft>
@@ -82,9 +74,9 @@ class GamePage extends Component<GamePageProps> {
             { game.name }
           </div>
           {
-            wonCellType && (
-              <>
-                <div className={styles.winnerPlayer}>
+            wonCellType ?
+              <div className={styles.finishedInfo}>
+                <div>
                   {
                     game.lastAction ?
                       <PlayerComponent player={game.lastAction.player}/> :
@@ -97,8 +89,8 @@ class GamePage extends Component<GamePageProps> {
                 <div className={styles.winnerToken}>
                   <CellTokenView cell={wonCellType}/>
                 </div>
-              </>
-            )
+              </div> :
+              finished && <div className={styles.finishedInfo}>Finished</div>
           }
         </LayoutView.BodyLeft>
         <LayoutView.BodyCenter>
