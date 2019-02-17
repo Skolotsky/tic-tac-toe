@@ -12,7 +12,7 @@ export class PlayerService {
     private playersSyncService: PlayersSyncService
   ) {
     autorun(() => {
-        if (this.webSocketService.isConnected) {
+      if (this.webSocketService.isConnected) {
         this.fetchId();
       }
     });
