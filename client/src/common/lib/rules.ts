@@ -120,3 +120,9 @@ export const getWonCellType = (game: Game): FilledCellType | null => {
   );
   return wonCellType;
 };
+
+export const joinGame = (game: Game, player: PlayerGUID) => {
+  if (!game.players.includes(player)) {
+    game.players.push(player)
+  }
+};
